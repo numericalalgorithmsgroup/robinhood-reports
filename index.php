@@ -23,8 +23,10 @@
     <link rel="stylesheet" href="css/footer.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
     <script src="js/ui-bootstrap-tpls-1.1.2.min.js"></script>
+    <script src="js/humanize.js"></script>
+    <script src="js/angular-humanize.js"></script>
     <script>
-      var tableApp = angular.module('tableApp', ['ui.bootstrap']);
+      var tableApp = angular.module('tableApp', ['ui.bootstrap','angular-humanize']);
       tableApp.controller('tableCtrl', function($scope, $http, $location) {
         // Show loading spinners until AJAX returns
         $scope.tableloading = true;
@@ -116,10 +118,13 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
-                  <td class="text-nowrap" ng-repeat="(key,value) in row"><div class="text-nowrap limit-cell" uib-popover="{{ value }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ value }}</td>
-                </tr>
-                <tr class="active">
-                  <td ng-repeat="(key,value) in total" class="limit-cell" uib-popover="{{ value }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ value }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.File_System }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.File_System }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Users }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Users | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Total_Size }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Total_Size | humanizeFilesize}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Old_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Old_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Size_of_Old_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Percent_Old_Space }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Percent_Old_Space }}</td>
                 </tr>
               </tbody>
             </table>

@@ -4,6 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once("dbroconf.php");
 require_once("time.php");
+require_once("dataconvert.php");
 
 foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
@@ -27,6 +28,8 @@ foreach ($db_ro_confs as $conf) {
     $sizers = $sizeresult->fetch_array(MYSQLI_ASSOC);
     $oldnumfilesrs = $oldnumfilesresult->fetch_array(MYSQLI_ASSOC);
     $oldsizers = $oldsizeresult->fetch_array(MYSQLI_ASSOC);
+
+    $percentold = sprintf('%0.2f', ($oldsizers["Oldsize"]/$sizers["Size"])*100);
   
     if ($outp != "[") {$outp .= ",";}
     $outp .= '{"File_System":"'       . $conf["fs"] . '",';
@@ -35,7 +38,6 @@ foreach ($db_ro_confs as $conf) {
     $outp .= '"Total_Size":'          . (is_null($sizers["Size"]) ? 0 : $sizers["Size"])  . ',';
     $outp .= '"Number_of_Old_Files":' . (is_null($oldnumfilesrs["Oldfiles"]) ? 0 : $oldnumfilesrs["Oldfiles"])  . ',';
     $outp .= '"Size_of_Old_Files":'   . (is_null($oldsizers["Oldsize"]) ? 0 : $oldsizers["Oldsize"])  . ',';
-    $percentold = sprintf('%0.2f', ($oldsizers["Oldsize"]/$sizers["Size"])*100);
     $outp .= '"Percent_Old_Space":'   . (is_null($percentold) ? 0: $percentold) . '}';
     $outp .= "]";
     echo($outp);
