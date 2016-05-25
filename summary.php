@@ -15,12 +15,6 @@ foreach ($db_ro_confs as $conf) {
     $oldnumfilesql = "SELECT COUNT(*) AS Oldfiles FROM ENTRIES WHERE type='file' AND last_mod<" . $sixmonthsago;
     $oldsizesql = "SELECT SUM(size) AS Oldsize FROM ENTRIES WHERE ENTRIES.last_mod<" . $sixmonthsago;
 
-    echo $usersql . "\n";
-    echo $numfilesql . "\n";
-    echo $sizesql . "\n";
-    echo $oldnumfilesql . "\n";
-    echo $oldsizesql . "\n";
-
     $outp = "[";
     $userresult = $conn->query($usersql) or trigger_error($conn->error."[$usersql]");
     $numfilesresult = $conn->query($numfilesql) or trigger_error($conn->error."[$numfilesql]");
