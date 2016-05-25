@@ -7,7 +7,7 @@ require_once("dbroconf.php");
 $outp = "[";
 foreach ($db_ro_confs as $conf) {
   if ($outp != "[") {$outp .= ",";}
-  $outp .= '{"File_System":"'       . $conf["fs"] . '"}';
+  $outp .= '"' . $conf["fs"] . '"';
 }
 $outp .= "]";
 echo($outp);
