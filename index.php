@@ -30,6 +30,7 @@
       tableApp.controller('tableCtrl', function($scope, $http, $location) {
         // Show loading spinners until AJAX returns
         $scope.tableloading = true;
+        $scope.progressbarloading = true;
         // Pull URL from user's browser to determine how to query database (useful for SSH tunneling through localhost)
         var site = $location.protocol() + "://" + $location.host() + ":" + $location.port();
         // Determine if we're running development or production version
@@ -43,6 +44,8 @@
         console.log("Loading data from: " + site + path);
         $scope.filesys = [];
         $scope.result = [];
+        $scope.numfs = 0;
+        $scope.returnedfs = 0;
         // Set the default sorting type
         $scope.sortType = "File_System";
         // Set the default sorting order
@@ -60,6 +63,8 @@
           $http.get(site + filesysPage).then(function (response) {
             // Successful HTTP GET
             $scope.filesys = response.data;
+            $scope.numfs = response.data.length;
+            $scope.progressbarloading = false;
             console.log($scope.filesys);
             for (fs in $scope.filesys) {
               // Query for each file system's data
@@ -72,8 +77,11 @@
                 console.log("Failed to load page");
               }).finally(function() {
                 // Upon success or failure
-                $scope.tableloading = false;
-                console.log($scope.result);
+                $scope.returnedfs++;
+                if ($scope.returnedfs == $scope.numfs) {
+                  $scope.tableloading = false;
+                  console.log($scope.result);
+                }
               });
             }
           }, function (response) {
@@ -96,14 +104,16 @@
   </head>
   <body ng-app="tableApp" ng-controller="tableCtrl">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div ng-show="tableloading" class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-          </div>
-          <div ng-hide="tableloading" class="table-responsive">
+      <div class="row" ng-show="tableloading && !progressbarloading">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <uib-progressbar class="progress-striped active" max="numfs" value="returnedfs">{{returnedfs}}/{{numfs}} File Systems</uib-progressbar>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+      <div class="row" ng-hide="tableloading">
+        <div class="col-md-12"> 
+          <div class="table-responsive">
             <table class="table table-striped table-bordered table-hover" style="table-layout: fixed">
               <thead>
                 <tr class="active">
@@ -118,13 +128,13 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.File_System }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.File_System }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Users }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Users | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Total_Size }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Total_Size | humanizeFilesize}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Number_of_Old_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Number_of_Old_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Size_of_Old_Files }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell" uib-popover="{{ row.Percent_Old_Space }}" popover-placement="auto top-left" popover-trigger="outsideClick" popover-append-to-body="true">{{ row.Percent_Old_Space }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Users | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Total_Size | humanizeFilesize}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Old_Space }}</td>
                 </tr>
               </tbody>
             </table>
