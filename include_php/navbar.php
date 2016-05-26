@@ -12,8 +12,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Summary</a></li>
-            <li><a href="#">Detailed</a></li>
+            <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/">Summary</a></li>
+            <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/detailed.php">Detailed</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Special <span class="caret"></span></a>
               <ul class="dropdown-menu">
