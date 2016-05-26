@@ -6,25 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>HPC Disk Statistics</title>
-
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Loading page -->
-    <link href="css/spinner.css" rel="stylesheet">
-    <!-- Vertically align elements in rows -->
-    <link rel="stylesheet" href="css/vertical-align.css" type="text/css">
-    <!-- Forces word wrap inside popovers so the text doesn't extend beyond the popover -->
-    <link rel="stylesheet" href="css/popover-fix.css" type="text/css">
-    <!-- Limits size of table cell and hides data behind ellipsis -->
-    <link rel="stylesheet" href="css/limit-table-cell.css" type="text/css">
-    <!-- Created an ultracondensed class based on bootstrap's condensed class -->
-    <link rel="stylesheet" href="css/table-ultracondensed.css" type="text/css">
-    <!-- Footer styling based on Bootstrap examples -->
-    <link rel="stylesheet" href="css/footer.css" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-    <script src="js/ui-bootstrap-tpls-1.1.2.min.js"></script>
-    <script src="js/humanize.js"></script>
-    <script src="js/angular-humanize.js"></script>
+    <?php require_once("include_php/css.php"); ?>
+    <?php require_once("include_php/leading_js.php"); ?>
     <script>
       var tableApp = angular.module('tableApp', ['ui.bootstrap','angular-humanize']);
       tableApp.controller('tableCtrl', function($scope, $http, $location) {
@@ -142,15 +125,7 @@
         </div>
       </div>
     </div>
-    <footer class="footer">
-      <div class="container-fluid">
-        <p class="text-muted text-center">Reach the developer <a href="mailto:developer@example.org?subject=Disk Statistics Website Request">here</a></p>
-      </div>
-    </footer>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <?php require_once("include_php/footer.php"); ?>
+    <?php require_once("include_php/trailing_js.php"); ?>
   </body>
 </html>
