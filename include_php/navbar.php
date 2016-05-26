@@ -13,7 +13,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Summary</a></li>
-            <li><a href="#">Details</a></li>
+            <li><a href="#">Detailed</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Special <span class="caret"></span></a>
               <ul class="dropdown-menu">

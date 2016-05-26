@@ -22,7 +22,7 @@
         } else {
           var path = "/diskstatsdev/";
         }
-        var sumPage = path + "summary.php";
+        var sumPage = path + "summary_backend.php";
         var filesysPage = path + "filesys.php";
         console.log("Loading data from: " + site + path);
         $scope.filesys = [];
