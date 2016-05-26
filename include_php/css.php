@@ -1,5 +1,7 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Navbar CSS -->
+    <link href="css/navbar-fixed-top.css" rel="stylesheet">
     <!-- Loading page -->
     <link href="css/spinner.css" rel="stylesheet">
     <!-- Vertically align elements in rows -->

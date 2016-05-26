@@ -86,6 +86,7 @@
     <![endif]-->
   </head>
   <body ng-app="tableApp" ng-controller="tableCtrl">
+    <?php require_once("include_php/navbar.php"); ?>
     <div class="container-fluid">
       <div class="row" ng-show="tableloading && !progressbarloading">
         <div class="col-md-3"></div>
