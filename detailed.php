@@ -27,6 +27,8 @@
           $scope.tableloading = true;
           $scope.progressbarloading = true;
           $scope.result = [];
+          $scope.detailedResult = [];
+          $scope.summedResult = [];
           $scope.returnedfs = 0;
           $scope.filesysOpts = [];
           $scope.ownerOpts = [];
@@ -57,10 +59,17 @@
               $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
                 // Successful HTTP GET
                 for (row in response.data) {
-                  $scope.result.push(response.data[row]);
+                  resultrow = response.data[row];
+                  if (resultrow.Size_of_Files == 0) {
+                    resultrow.Percent_Old_Space = 0;
+                  }
+                  else {
+                    resultrow.Percent_Old_Space = parseFloat(((resultrow.Size_of_Old_Files / resultrow.Size_of_Files) * 100).toFixed(2));
+                  }
+                  $scope.result.push(resultrow);
                   // If owner isn't already in owner options add it
-                  if ($scope.ownerOpts.indexOf(response.data[row].Owner) == -1) {
-                    $scope.ownerOpts.push(response.data[row].Owner);
+                  if ($scope.ownerOpts.indexOf(resultrow.Owner) == -1) {
+                    $scope.ownerOpts.push(resultrow.Owner);
                   }
                 }
                 // Store length of resulting list to determine number of pages

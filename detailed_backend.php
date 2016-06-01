@@ -19,15 +19,13 @@ foreach ($db_ro_confs as $conf) {
     $detailresult = $conn->query($detailsql) or trigger_error($conn->error."[$detailsql]");
   
     while($detailrs = $detailresult->fetch_array(MYSQLI_ASSOC)) {
-      $percentold = sprintf('%0.2f', ($detailrs["oldsizesum"]/$detailrs["sizesum"])*100);
       if ($outp != "[") {$outp .= ",";}
       $outp .= '{"File_System":"'       . $conf["fs"] . '",';
       $outp .= '"Owner":"'              . $detailrs["owner"] . '",';
       $outp .= '"Number_of_Files":'     . (is_null($detailrs["countsum"]) ? 0 : $detailrs["countsum"])  . ',';
       $outp .= '"Size_of_Files":'       . (is_null($detailrs["sizesum"]) ? 0 : $detailrs["sizesum"])  . ',';
       $outp .= '"Number_of_Old_Files":' . (is_null($detailrs["oldcountsum"]) ? 0 : $detailrs["oldcountsum"])  . ',';
-      $outp .= '"Size_of_Old_Files":'   . (is_null($detailrs["oldsizesum"]) ? 0 : $detailrs["oldsizesum"])  . ',';
-      $outp .= '"Percent_Old_Space":'   . (is_null($percentold) ? 0: $percentold) . '}';
+      $outp .= '"Size_of_Old_Files":'   . (is_null($detailrs["oldsizesum"]) ? 0 : $detailrs["oldsizesum"])  . '}';
     }
     $outp .= "]";
     echo($outp);
