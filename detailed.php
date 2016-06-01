@@ -11,9 +11,6 @@
     <script>
       var tableApp = angular.module('tableApp', ['ui.bootstrap','angular-humanize']);
       tableApp.controller('tableCtrl', function($scope, $http, $location) {
-        // Show loading spinners until AJAX returns
-        $scope.tableloading = true;
-        $scope.progressbarloading = true;
         // Pull URL from user's browser to determine how to query database (useful for SSH tunneling through localhost)
         var site = $location.protocol() + "://" + $location.host() + ":" + $location.port();
         // Determine if we're running development or production version
@@ -25,10 +22,16 @@
         var detailPage = path + "detailed_backend.php";
         var filesysPage = path + "filesys.php";
         console.log("Loading data from: " + site + path);
-        $scope.filesys = [];
-        $scope.result = [];
-        $scope.numfs = 0;
-        $scope.returnedfs = 0;
+        initialize = function() {
+          // Show loading spinners until AJAX returns
+          $scope.tableloading = true;
+          $scope.progressbarloading = true;
+          $scope.result = [];
+          $scope.returnedfs = 0;
+          $scope.filesysOpts = [];
+          $scope.numfs = 1;
+        }
+        $scope.selectedFilesys = "";
         // Set the default sorting type
         $scope.sortType = "File_System";
         // Set the default sorting order
@@ -40,18 +43,16 @@
         }
 
         $scope.query = function() {
-          $scope.tableloading = true;
-          $scope.result = [];
+          initialize();
           // Get list of file systems
           $http.get(site + filesysPage).then(function (response) {
             // Successful HTTP GET
-            $scope.filesys = response.data;
+            $scope.filesysOpts = response.data;
             $scope.numfs = response.data.length;
             $scope.progressbarloading = false;
-            console.log($scope.filesys);
-            for (fs in $scope.filesys) {
+            for (fs in $scope.filesysOpts) {
               // Query for each file system's data
-              $http.get(site + detailPage + "?fs=" + $scope.filesys[fs]).then(function (response) {
+              $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
                 // Successful HTTP GET
                 for (row in response.data) {
                   $scope.result.push(response.data[row]);
@@ -69,6 +70,8 @@
                 }
               });
             }
+            // Add empty item to beginning of array to allow user to select all file systems
+            $scope.filesysOpts.unshift("");
           }, function (response) {
             // Failed HTTP GET
             console.log("Failed to load page");
@@ -97,6 +100,20 @@
         </div>
         <div class="col-md-3"></div>
       </div>
+      <div class="row" ng-hide="tableloading" style="margin-bottom:15px">
+        <div class="col-md-4 text-center">
+          <form class="form-inline">
+            <div class="form-group">
+              <label>File System:</label>
+              <div class="input-group">
+                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts"></select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-4 text-center"></div>
+        <div class="col-md-4 text-center"></div>
+      </div>
       <div class="row" ng-hide="tableloading">
         <div class="col-md-12"> 
           <div class="table-responsive">
@@ -113,7 +130,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
+                <tr ng-repeat="row in result | filter:{File_System:selectedFilesys} | orderBy:sortType:sortReverse">
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Owner}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
