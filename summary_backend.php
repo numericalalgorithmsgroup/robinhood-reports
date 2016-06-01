@@ -34,8 +34,9 @@ foreach ($db_ro_confs as $conf) {
     if ($outp != "[") {$outp .= ",";}
     $outp .= '{"File_System":"'       . $conf["fs"] . '",';
     $outp .= '"Number_of_Users":'     . (is_null($userrs["Users"]) ? 0 : $userrs["Users"])  . ',';
+    $outp .= '"Total_Space":'         . (is_null($conf["size"]) ? 0 : $conf["size"]) . ',';
     $outp .= '"Number_of_Files":'     . (is_null($numfilesrs["Files"]) ? 0 : $numfilesrs["Files"])  . ',';
-    $outp .= '"Total_Size":'          . (is_null($sizers["Size"]) ? 0 : $sizers["Size"])  . ',';
+    $outp .= '"Used_Space":'          . (is_null($sizers["Size"]) ? 0 : $sizers["Size"])  . ',';
     $outp .= '"Number_of_Old_Files":' . (is_null($oldnumfilesrs["Oldfiles"]) ? 0 : $oldnumfilesrs["Oldfiles"])  . ',';
     $outp .= '"Size_of_Old_Files":'   . (is_null($oldsizers["Oldsize"]) ? 0 : $oldsizers["Oldsize"])  . ',';
     $outp .= '"Percent_Old_Space":'   . (is_null($percentold) ? 0: $percentold) . '}';
