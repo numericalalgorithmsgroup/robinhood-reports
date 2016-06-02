@@ -40,10 +40,46 @@
         $scope.sortType = "File_System";
         // Set the default sorting order
         $scope.sortReverse = false;
+        // Set the default aggregation option
+        $scope.isSummarized = false;
 
         $scope.sortChanged = function(key) {
           $scope.sortType = key;
           $scope.sortReverse = !$scope.sortReverse;
+        }
+
+        $scope.summarizeChanged = function() {
+          $scope.isSummarized = !$scope.isSummarized;
+          if ($scope.isSummarized) {
+            $scope.result = $scope.summedResult;
+            $scope.sortType = "Owner";
+            $scope.sortReverse = false;
+          }
+          else {
+            $scope.result = $scope.detailedResult;
+            $scope.sortType = "File_System";
+            $scope.sortReverse = false;
+          }
+        }
+
+        calc_percent = function(row) { 
+          // Check for NaN condition
+          if (row.Size_of_Files == 0) {
+            return 0;
+          }
+          else { // else calculate the old space and add it to the row
+            return parseFloat(((row.Size_of_Old_Files / row.Size_of_Files) * 100).toFixed(2));
+          }
+        }
+
+        function checkSumExists(row) {
+          index = -1;
+          for (sumrow in $scope.summedResult) {
+            if ($scope.summedResult[sumrow].Owner == row.Owner) {
+              index = sumrow;
+            }
+          }
+          return index;
         }
 
         $scope.query = function() {
@@ -59,25 +95,35 @@
               $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
                 // Successful HTTP GET
                 for (row in response.data) {
-                  resultrow = response.data[row];
-                  if (resultrow.Size_of_Files == 0) {
-                    resultrow.Percent_Old_Space = 0;
+                  detailedResultRow = response.data[row];
+                  detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                  sumidx = checkSumExists(detailedResultRow);
+                  if (sumidx != -1) {
+                    // A row already exists for this owner at sumidx so just add to it
+                    $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                    $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
+                    $scope.summedResult[sumidx].Number_of_Old_Files += detailedResultRow.Number_of_Old_Files;
+                    $scope.summedResult[sumidx].Size_of_Old_Files += detailedResultRow.Size_of_Old_Files;
+                    $scope.summedResult[sumidx].Percent_Old_Space = calc_percent($scope.summedResult[sumidx]);
                   }
                   else {
-                    resultrow.Percent_Old_Space = parseFloat(((resultrow.Size_of_Old_Files / resultrow.Size_of_Files) * 100).toFixed(2));
+                    // A row does not already exist so create a new summary row
+                    // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                    $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
                   }
-                  $scope.result.push(resultrow);
                   // If owner isn't already in owner options add it
-                  if ($scope.ownerOpts.indexOf(resultrow.Owner) == -1) {
-                    $scope.ownerOpts.push(resultrow.Owner);
+                  if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
+                    $scope.ownerOpts.push(detailedResultRow.Owner);
                   }
+                  // Save results to respective arrays
+                  $scope.detailedResult.push(detailedResultRow);
                 }
-                // Store length of resulting list to determine number of pages
               }, function (response) {
                 // Failed HTTP GET
                 console.log("Failed to load page");
               }).finally(function() {
                 // Upon success or failure
+                // Store length of resulting list to determine number of pages
                 $scope.returnedfs++;
                 if ($scope.returnedfs == $scope.numfs) {
                   $scope.tableloading = false;
@@ -85,6 +131,8 @@
                 }
               });
             }
+            // By default show the detailed result page
+            $scope.result = $scope.detailedResult;
             // Add empty item to beginning of array to allow user to select all file systems
             $scope.filesysOpts.unshift("");
             $scope.ownerOpts.unshift("");
@@ -116,7 +164,7 @@
         </div>
         <div class="col-md-3"></div>
       </div>
-      <div class="row" ng-hide="tableloading" style="margin-bottom:15px">
+      <div class="row vertical-align" ng-hide="tableloading" style="margin-bottom:15px">
         <div class="col-md-4 text-center">
           <form class="form-inline">
             <div class="form-group">
@@ -137,7 +185,17 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center"></div>
+        <div class="col-md-4 text-center">
+          <form class="form-inline">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <b>Summarize:&nbsp;</b><input type="checkbox" value="" ng-click="summarizeChanged()">
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="row" ng-hide="tableloading">
         <div class="col-md-12"> 
@@ -145,7 +203,7 @@
             <table class="table table-striped table-bordered table-ultracondensed table-hover" style="table-layout: fixed">
               <thead>
                 <tr class="active">
-                  <th ng-repeat="(key,value) in result[0]" style="word-wrap: break-word">
+                  <th ng-repeat="(key,value) in result[0]" ng-hide="isSummarized && key == 'File_System'" style="word-wrap: break-word">
                     <a href="#" ng-click='sortChanged(key)'>
                       {{ key }}
                       <span ng-show="sortType == key && sortReverse" class="caret"></span>
@@ -156,7 +214,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in result | filter:{File_System:selectedFilesys} | filter:{Owner:selectedOwner} | orderBy:sortType:sortReverse">
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
+                  <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Owner}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
