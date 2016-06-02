@@ -4,7 +4,6 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once("dbroconf.php");
 require_once("helper_php/time.php");
-require_once("helper_php/dataconvert.php");
 
 foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
