@@ -19,20 +19,22 @@
         } else {
           var path = "/diskstatsdev/";
         }
-        var detailPage = path + "detailed_backend.php";
+        var detailPage = path + "histogram_backend.php";
         var filesysPage = path + "helper_php/filesys.php";
+        var ownerPage = path + "helper_php/owner.php";
         console.log("Loading data from: " + site + path);
-        initialize = function() {
+        onetimeinitialize = function() {
+          $scope.filesysOpts = [];
+          $scope.ownerOpts = [];
+          $scope.warning = false;
+        }
+        reinitialize = function() {
           // Show loading spinners until AJAX returns
           $scope.tableloading = true;
           $scope.progressbarloading = true;
           $scope.result = [];
           $scope.detailedResult = [];
           $scope.summedResult = [];
-          $scope.returnedfs = 0;
-          $scope.filesysOpts = [];
-          $scope.ownerOpts = [];
-          $scope.numfs = 1;
         }
         $scope.selectedFilesys = "";
         $scope.selectedOwner = "";
@@ -82,60 +84,42 @@
           return index;
         }
 
-        $scope.query = function() {
-          initialize();
+        // Copied from http://codegolf.stackexchange.com/questions/17127/array-merge-without-duplicates
+        function merge(a1, a2) {
+          var hash = {};
+          var arr = [];
+          for (var i = 0; i < a1.length; i++) {
+             if (hash[a1[i]] !== true) {
+               hash[a1[i]] = true;
+               arr[arr.length] = a1[i];
+             }
+          }
+          for (var i = 0; i < a2.length; i++) {
+             if (hash[a2[i]] !== true) {
+               hash[a2[i]] = true;
+               arr[arr.length] = a2[i];
+             }
+          }
+          return arr;
+       }
+
+        $scope.getOptions = function() {
           // Get list of file systems
           $http.get(site + filesysPage).then(function (response) {
             // Successful HTTP GET
             $scope.filesysOpts = response.data;
-            $scope.numfs = response.data.length;
-            $scope.progressbarloading = false;
             for (fs in $scope.filesysOpts) {
-              // Query for each file system's data
-              $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
+              // Get list of owners
+              $http.get(site + ownerPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
                 // Successful HTTP GET
-                for (row in response.data) {
-                  detailedResultRow = response.data[row];
-                  detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
-                  sumidx = checkSumExists(detailedResultRow);
-                  if (sumidx != -1) {
-                    // A row already exists for this owner at sumidx so just add to it
-                    $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
-                    $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
-                    $scope.summedResult[sumidx].Number_of_Old_Files += detailedResultRow.Number_of_Old_Files;
-                    $scope.summedResult[sumidx].Size_of_Old_Files += detailedResultRow.Size_of_Old_Files;
-                    $scope.summedResult[sumidx].Percent_Old_Space = calc_percent($scope.summedResult[sumidx]);
-                  }
-                  else {
-                    // A row does not already exist so create a new summary row
-                    // Objects are passed by reference, so we have to make a copy of it using JSON parsing
-                    $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
-                  }
-                  // If owner isn't already in owner options add it
-                  if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
-                    $scope.ownerOpts.push(detailedResultRow.Owner);
-                  }
-                  // Save results to respective arrays
-                  $scope.detailedResult.push(detailedResultRow);
-                }
+                $scope.ownerOpts = merge($scope.ownerOpts, response.data);
               }, function (response) {
                 // Failed HTTP GET
                 console.log("Failed to load page");
               }).finally(function() {
                 // Upon success or failure
-                // Store length of resulting list to determine number of pages
-                $scope.returnedfs++;
-                if ($scope.returnedfs == $scope.numfs) {
-                  $scope.tableloading = false;
-                  console.log($scope.result);
-                }
               });
             }
-            // By default show the detailed result page
-            $scope.result = $scope.detailedResult;
-            // Add empty item to beginning of array to allow user to select all file systems
-            $scope.filesysOpts.unshift("");
-            $scope.ownerOpts.unshift("");
           }, function (response) {
             // Failed HTTP GET
             console.log("Failed to load page");
@@ -143,7 +127,55 @@
             // Upon success or failure
           });
         }
-        $scope.query();
+
+        $scope.query = function() {
+          // Check if the user has provided the necessary inputs
+          if ($scope.selectedFilesys != "" && $scope.selectedOwner != "") {
+            reinitialize();
+            $scope.progressbarloading = false;
+            $scope.warning = false;
+            // Query for each file system's data
+            $http.get(site + detailPage + "?fs=" + $scope.selectedFilesys + "&owner=" + $scope.selectedOwner).then(function (response) {
+              // Successful HTTP GET
+              for (row in response.data) {
+                detailedResultRow = response.data[row];
+                //detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                sumidx = checkSumExists(detailedResultRow);
+                if (sumidx != -1) {
+                  // A row already exists for this owner at sumidx so just add to it
+                  $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                  $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
+                }
+                else {
+                  // A row does not already exist so create a new summary row
+                  // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                  $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
+                }
+                // If owner isn't already in owner options add it
+                //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
+                //  $scope.ownerOpts.push(detailedResultRow.Owner);
+                //}
+                // Save results to respective arrays
+                $scope.detailedResult.push(detailedResultRow);
+              }
+            }, function (response) {
+              // Failed HTTP GET
+              console.log("Failed to load page");
+            }).finally(function() {
+              // Upon success or failure
+              // Store length of resulting list to determine number of pages
+              $scope.tableloading = false;
+              console.log($scope.result);
+            });
+            // By default show the detailed result page
+            $scope.result = $scope.detailedResult;
+          }
+          else {
+            $scope.warning = true;
+          }
+        }
+      onetimeinitialize();
+      $scope.getOptions();
       });
     </script>
 
@@ -157,15 +189,8 @@
   <body ng-app="tableApp" ng-controller="tableCtrl">
     <?php require_once("include_php/navbar.php"); ?>
     <div class="container-fluid">
-      <div class="row" ng-show="tableloading && !progressbarloading">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
-          <uib-progressbar class="progress-striped active" max="numfs" value="returnedfs">{{returnedfs}}/{{numfs}} File Systems</uib-progressbar>
-        </div>
-        <div class="col-md-3"></div>
-      </div>
-      <div class="row vertical-align" ng-hide="tableloading" style="margin-bottom:15px">
-        <div class="col-md-4 text-center">
+      <div class="row vertical-align" style="margin-bottom:15px">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>File System:</label>
@@ -175,7 +200,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>Owner:</label>
@@ -185,7 +210,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <div class="checkbox">
@@ -196,6 +221,27 @@
             </div>
           </form>
         </div>
+        <div class="col-md-3 text-center">
+          <form class="form-inline">
+            <button type="button" class="btn btn-primary" ng-click="query()">Query</button>
+          </form>
+        </div>
+      </div>
+      <div class="row" ng-show="tableloading && !progressbarloading">
+        <div class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+      </div>
+      <div class="row" ng-show="warning">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div class="alert alert-danger text-center" role="alert">
+            <b>Please select a file system and owner to continue.</b>
+          </div>
+        </div>
+        <div class="col-md-3"></div>
       </div>
       <div class="row" ng-hide="tableloading">
         <div class="col-md-12"> 
@@ -213,14 +259,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in result | filter:{File_System:selectedFilesys} | filter:{Owner:selectedOwner} | orderBy:sortType:sortReverse">
+                <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
                   <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Owner}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Old_Space }}</td>
                 </tr>
               </tbody>
             </table>
