@@ -28,6 +28,7 @@
           $scope.ownerOpts = [];
           $scope.warning = false;
           $scope.numfs = 1;
+          $scope.isSummarized = false;
         }
         reinitialize = function() {
           // Show loading spinners until AJAX returns
@@ -156,17 +157,19 @@
                     console.log("Failed to load page");
                   }).finally(function() {
                     // Upon success or failure
+                    if ($scope.selectedFilesys == "All") {
+                      $scope.result = $scope.summedResult;
+                      $scope.isSummarized = true;
+                    }
+                    else {
+                      $scope.result = $scope.detailedResult;
+                      $scope.isSummarized = false;
+                    }
                     // Store length of resulting list to determine number of pages
                     $scope.returnedfs++;
                     if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
                       $scope.tableloading = false;
                       console.log($scope.result);
-                    }
-                    if ($scope.selectedFilesys == "All") {
-                      $scope.result = $scope.summedResult;
-                    }
-                    else {
-                      $scope.result = $scope.detailedResult;
                     }
                   });
                 }
@@ -243,7 +246,7 @@
             <table class="table table-striped table-bordered table-ultracondensed table-hover" style="table-layout: fixed">
               <thead>
                 <tr class="active">
-                  <th ng-repeat="(key,value) in result[0]" ng-hide="selectedFilesys == 'All' && key == 'File_System'" style="word-wrap: break-word">
+                  <th ng-repeat="(key,value) in result[0]" ng-hide="isSummarized && key == 'File_System'" style="word-wrap: break-word">
                     <a href="#" ng-click='sortChanged(key)'>
                       {{ key }}
                       <span ng-show="sortType == key && sortReverse" class="caret"></span>
@@ -254,7 +257,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
-                  <td class="text-nowrap" ng-hide="selectedFilesys == 'All'"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
+                  <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
