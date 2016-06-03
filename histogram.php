@@ -125,6 +125,7 @@
             console.log("Failed to load page");
           }).finally(function() {
             // Upon success or failure
+            $scope.filesysOpts.unshift("All");
           });
         }
 
@@ -135,38 +136,46 @@
             $scope.progressbarloading = false;
             $scope.warning = false;
             // Query for each file system's data
-            $http.get(site + detailPage + "?fs=" + $scope.selectedFilesys + "&owner=" + $scope.selectedOwner).then(function (response) {
-              // Successful HTTP GET
-              for (row in response.data) {
-                detailedResultRow = response.data[row];
-                //detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
-                sumidx = checkSumExists(detailedResultRow);
-                if (sumidx != -1) {
-                  // A row already exists for this owner at sumidx so just add to it
-                  $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
-                  $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
+            for (fs in $scope.filesysOpts) {
+              // If the user selected a file system query or proceed of user selected all file systems
+              if ($scope.filesysOpts[fs] == $scope.selectedFilesys || $scope.selectedFilesys == "All") {
+                // If the user selected all file systems we want to query for each file system except the one named "All"
+                if ($scope.filesysOpts[fs] != "All") {
+                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs] + "&owner=" + $scope.selectedOwner).then(function (response) {
+                    // Successful HTTP GET
+                    for (row in response.data) {
+                      detailedResultRow = response.data[row];
+                      //detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                      sumidx = checkSumExists(detailedResultRow);
+                      if (sumidx != -1) {
+                        // A row already exists for this owner at sumidx so just add to it
+                        $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                        $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
+                      }
+                      else {
+                        // A row does not already exist so create a new summary row
+                        // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                        $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
+                      }
+                      // If owner isn't already in owner options add it
+                      //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
+                      //  $scope.ownerOpts.push(detailedResultRow.Owner);
+                      //}
+                      // Save results to respective arrays
+                      $scope.detailedResult.push(detailedResultRow);
+                    }
+                  }, function (response) {
+                    // Failed HTTP GET
+                    console.log("Failed to load page");
+                  }).finally(function() {
+                    // Upon success or failure
+                    // Store length of resulting list to determine number of pages
+                    $scope.tableloading = false;
+                    console.log($scope.result);
+                  });
                 }
-                else {
-                  // A row does not already exist so create a new summary row
-                  // Objects are passed by reference, so we have to make a copy of it using JSON parsing
-                  $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
-                }
-                // If owner isn't already in owner options add it
-                //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
-                //  $scope.ownerOpts.push(detailedResultRow.Owner);
-                //}
-                // Save results to respective arrays
-                $scope.detailedResult.push(detailedResultRow);
               }
-            }, function (response) {
-              // Failed HTTP GET
-              console.log("Failed to load page");
-            }).finally(function() {
-              // Upon success or failure
-              // Store length of resulting list to determine number of pages
-              $scope.tableloading = false;
-              console.log($scope.result);
-            });
+            }
             // By default show the detailed result page
             $scope.result = $scope.detailedResult;
           }
