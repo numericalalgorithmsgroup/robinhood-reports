@@ -17,7 +17,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Special <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Age Histogram</a></li>
+                <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/histogram.php">Age Histogram</a></li>
                 <li><a href="#">Big Directories</a></li>
                 <li><a href="#">Interesting Files</a></li>
                 <li><a href="#">Print Files</a></li>
