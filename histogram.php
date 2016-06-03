@@ -27,6 +27,7 @@
           $scope.filesysOpts = [];
           $scope.ownerOpts = [];
           $scope.warning = false;
+          $scope.numfs = 1;
         }
         reinitialize = function() {
           // Show loading spinners until AJAX returns
@@ -35,6 +36,7 @@
           $scope.result = [];
           $scope.detailedResult = [];
           $scope.summedResult = [];
+          $scope.returnedfs = 0;
         }
         $scope.selectedFilesys = "";
         $scope.selectedOwner = "";
@@ -42,26 +44,10 @@
         $scope.sortType = "File_System";
         // Set the default sorting order
         $scope.sortReverse = false;
-        // Set the default aggregation option
-        $scope.isSummarized = false;
 
         $scope.sortChanged = function(key) {
           $scope.sortType = key;
           $scope.sortReverse = !$scope.sortReverse;
-        }
-
-        $scope.summarizeChanged = function() {
-          $scope.isSummarized = !$scope.isSummarized;
-          if ($scope.isSummarized) {
-            $scope.result = $scope.summedResult;
-            $scope.sortType = "Owner";
-            $scope.sortReverse = false;
-          }
-          else {
-            $scope.result = $scope.detailedResult;
-            $scope.sortType = "File_System";
-            $scope.sortReverse = false;
-          }
         }
 
         calc_percent = function(row) { 
@@ -77,7 +63,7 @@
         function checkSumExists(row) {
           index = -1;
           for (sumrow in $scope.summedResult) {
-            if ($scope.summedResult[sumrow].Owner == row.Owner) {
+            if ($scope.summedResult[sumrow].Age == row.Age) {
               index = sumrow;
             }
           }
@@ -108,6 +94,7 @@
           $http.get(site + filesysPage).then(function (response) {
             // Successful HTTP GET
             $scope.filesysOpts = response.data;
+            $scope.numfs = response.data.length;
             for (fs in $scope.filesysOpts) {
               // Get list of owners
               $http.get(site + ownerPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
@@ -170,8 +157,17 @@
                   }).finally(function() {
                     // Upon success or failure
                     // Store length of resulting list to determine number of pages
-                    $scope.tableloading = false;
-                    console.log($scope.result);
+                    $scope.returnedfs++;
+                    if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
+                      $scope.tableloading = false;
+                      console.log($scope.result);
+                    }
+                    if ($scope.selectedFilesys == "All") {
+                      $scope.result = $scope.summedResult;
+                    }
+                    else {
+                      $scope.result = $scope.detailedResult;
+                    }
                   });
                 }
               }
@@ -199,7 +195,7 @@
     <?php require_once("include_php/navbar.php"); ?>
     <div class="container-fluid">
       <div class="row vertical-align" style="margin-bottom:15px">
-        <div class="col-md-3 text-center">
+        <div class="col-md-4 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>File System:</label>
@@ -209,7 +205,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-4 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>Owner:</label>
@@ -219,18 +215,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-3 text-center">
-          <form class="form-inline">
-            <div class="form-group">
-              <div class="checkbox">
-                <label>
-                  <b>Summarize:&nbsp;</b><input type="checkbox" value="" ng-click="summarizeChanged()">
-                </label>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-4 text-center">
           <form class="form-inline">
             <button type="button" class="btn btn-primary" ng-click="query()">Query</button>
           </form>
@@ -258,7 +243,7 @@
             <table class="table table-striped table-bordered table-ultracondensed table-hover" style="table-layout: fixed">
               <thead>
                 <tr class="active">
-                  <th ng-repeat="(key,value) in result[0]" ng-hide="isSummarized && key == 'File_System'" style="word-wrap: break-word">
+                  <th ng-repeat="(key,value) in result[0]" ng-hide="selectedFilesys == 'All' && key == 'File_System'" style="word-wrap: break-word">
                     <a href="#" ng-click='sortChanged(key)'>
                       {{ key }}
                       <span ng-show="sortType == key && sortReverse" class="caret"></span>
@@ -269,7 +254,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
-                  <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
+                  <td class="text-nowrap" ng-hide="selectedFilesys == 'All'"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
