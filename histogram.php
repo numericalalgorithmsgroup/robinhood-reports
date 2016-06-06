@@ -37,6 +37,7 @@
           $scope.result = [];
           $scope.detailedResult = [];
           $scope.summedResult = [];
+          $scope.totaledResult = [];
           $scope.returnedfs = 0;
         }
         $scope.selectedFilesys = "";
@@ -66,6 +67,16 @@
           for (sumrow in $scope.summedResult) {
             if ($scope.summedResult[sumrow].Age == row.Age) {
               index = sumrow;
+            }
+          }
+          return index;
+        }
+
+        function checkTotalExists(row) {
+          index = -1;
+          for (totalrow in $scope.totaledResult) {
+            if ($scope.totaledResult[totalrow].File_System == row.File_System) {
+              index = totalrow;
             }
           }
           return index;
@@ -134,9 +145,10 @@
                     for (row in response.data) {
                       detailedResultRow = response.data[row];
                       //detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                      // Combine results from each time slot to gather summary data across all file systems
                       sumidx = checkSumExists(detailedResultRow);
                       if (sumidx != -1) {
-                        // A row already exists for this owner at sumidx so just add to it
+                        // A row already exists for this owner and age at sumidx so just add to it
                         $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
                         $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
                       }
@@ -144,6 +156,18 @@
                         // A row does not already exist so create a new summary row
                         // Objects are passed by reference, so we have to make a copy of it using JSON parsing
                         $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
+                      }
+                      // Combine results from each file system to gather summary data per file system
+                      totalidx = checkTotalExists(detailedResultRow);
+                      if (totalidx != -1) {
+                        // A row already exists for this owner and file system at totalidx so just add to it
+                        $scope.totaledResult[totalidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                        $scope.totaledResult[totalidx].Size_of_Files += detailedResultRow.Size_of_Files;
+                      }
+                      else {
+                        // A row does not already exist so create a new total row
+                        // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                        $scope.totaledResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
                       }
                       // If owner isn't already in owner options add it
                       //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
@@ -169,7 +193,12 @@
                     $scope.returnedfs++;
                     if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
                       $scope.tableloading = false;
-                      console.log($scope.result);
+                      console.log("Detailed result");
+                      console.log($scope.detailedResult);
+                      console.log("Per time slot summary");
+                      console.log($scope.summedResult);
+                      console.log("Per file system summary");
+                      console.log($scope.totaledResult);
                     }
                   });
                 }
