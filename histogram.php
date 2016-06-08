@@ -38,10 +38,12 @@
           $scope.detailedResult = [];
           $scope.summedResult = [];
           $scope.totaledResult = [];
+          $scope.grandTotaledResult = {File_System: "All", Age: "Total", Number_of_Files: 0, Size_of_Files: 0};
           $scope.returnedfs = 0;
+          $scope.selectedFilesys = $scope.currentFilesys;
         }
-        $scope.selectedFilesys = "";
-        $scope.selectedOwner = "";
+        $scope.currentFilesys = "";
+        $scope.currentOwner = "";
         // Set the default sorting type
         $scope.sortType = "File_System";
         // Set the default sorting order
@@ -130,7 +132,7 @@
 
         $scope.query = function() {
           // Check if the user has provided the necessary inputs
-          if ($scope.selectedFilesys != "" && $scope.selectedOwner != "") {
+          if ($scope.selectedFilesys != "" && $scope.currentOwner != "") {
             reinitialize();
             $scope.progressbarloading = false;
             $scope.warning = false;
@@ -140,7 +142,7 @@
               if ($scope.filesysOpts[fs] == $scope.selectedFilesys || $scope.selectedFilesys == "All") {
                 // If the user selected all file systems we want to query for each file system except the one named "All"
                 if ($scope.filesysOpts[fs] != "All") {
-                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs] + "&owner=" + $scope.selectedOwner).then(function (response) {
+                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs] + "&owner=" + $scope.currentOwner).then(function (response) {
                     // Successful HTTP GET
                     for (row in response.data) {
                       detailedResultRow = response.data[row];
@@ -167,8 +169,13 @@
                       else {
                         // A row does not already exist so create a new total row
                         // Objects are passed by reference, so we have to make a copy of it using JSON parsing
-                        $scope.totaledResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
+                        tmpobject = JSON.parse(JSON.stringify(detailedResultRow));
+                        tmpobject.Age = "Total";
+                        $scope.totaledResult.push(tmpobject);
                       }
+                      // Combine results across all file systems to get a grand total
+                      $scope.grandTotaledResult.Number_of_Files += detailedResultRow.Number_of_Files;
+                      $scope.grandTotaledResult.Size_of_Files += detailedResultRow.Size_of_Files;
                       // If owner isn't already in owner options add it
                       //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
                       //  $scope.ownerOpts.push(detailedResultRow.Owner);
@@ -192,6 +199,8 @@
                     // Store length of resulting list to determine number of pages
                     $scope.returnedfs++;
                     if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
+                      // If all file systems were selected add the grand total to the list so we can filter on one list
+                      $scope.totaledResult.push($scope.grandTotaledResult);
                       $scope.tableloading = false;
                       console.log("Detailed result");
                       console.log($scope.detailedResult);
@@ -199,6 +208,8 @@
                       console.log($scope.summedResult);
                       console.log("Per file system summary");
                       console.log($scope.totaledResult);
+                      console.log("Combined file system summary");
+                      console.log($scope.grandTotaledResult);
                     }
                   });
                 }
@@ -232,7 +243,7 @@
             <div class="form-group">
               <label>File System:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts | orderBy"></select>
+                <select class="form-control" ng-model="currentFilesys" ng-options="opt for opt in filesysOpts | orderBy"></select>
               </div>
             </div>
           </form>
@@ -242,7 +253,7 @@
             <div class="form-group">
               <label>Owner:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="selectedOwner" ng-options="opt for opt in ownerOpts | orderBy"></select>
+                <select class="form-control" ng-model="currentOwner" ng-options="opt for opt in ownerOpts | orderBy"></select>
               </div>
             </div>
           </form>
@@ -290,6 +301,12 @@
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
+                </tr>
+                <tr class="active">
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}" ng-hide="isSummarized"><div class="text-nowrap limit-cell"><b>{{ row.File_System }}</b></td>
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Age }}</b></td>
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Number_of_Files | humanizeInt }}</b></td>
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Size_of_Files | humanizeFilesize }}</b></td>
                 </tr>
               </tbody>
             </table>
