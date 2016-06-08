@@ -45,10 +45,12 @@ foreach ($db_ro_confs as $conf) {
 
     foreach (array_keys($results) as $key) {
       if ($outp != "[") {$outp .= ",";}
-      $outp .= '{"File_System":"'       . $conf["fs"] . '",';
-      $outp .= '"Age":"'                . $results_age[$key] . '",';
-      $outp .= '"Number_of_Files":'     . (is_null($results[$key]["number"]) ? 0 : $results[$key]["number"])  . ',';
-      $outp .= '"Size_of_Files":'       . (is_null($results[$key]["size"]) ? 0 : $results[$key]["size"])  . '}';
+      $outp .= '{"File_System":"'             . $conf["fs"] . '",';
+      $outp .= '"Age":"'                      . $results_age[$key] . '",';
+      $outp .= '"Number_of_Files":'           . (is_null($results[$key]["number"]) ? 0 : $results[$key]["number"])  . ',';
+      $outp .= '"Percentage_of_Total_Files":' . "0,";
+      $outp .= '"Size_of_Files":'             . (is_null($results[$key]["size"]) ? 0 : $results[$key]["size"])  . ',';
+      $outp .= '"Percentage_of_Total_Size":' . "0}";
     }
     $outp .= "]";
     echo($outp);
