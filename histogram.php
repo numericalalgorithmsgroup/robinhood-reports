@@ -54,21 +54,29 @@
           $scope.sortReverse = !$scope.sortReverse;
         }
 
-        calc_percent = function(row) { 
+        function calc_percent(num, total) {
           // Check for NaN condition
-          if (row.Size_of_Files == 0) {
+          if (total == 0) {
             return 0;
           }
-          else { // else calculate the old space and add it to the row
-            return parseFloat(((row.Size_of_Old_Files / row.Size_of_Files) * 100).toFixed(2));
+          else { // else calculate the percentage
+            return parseFloat(((num / total) * 100).toFixed(2));
+          }
+        }
+
+        function find_total(fs, value) {
+          for (var i = 0; i < $scope.totaledResult.length; i++) {
+            if ($scope.totaledResult[i].File_System == fs) {
+              return $scope.totaledResult[i][value];
+            }
           }
         }
 
         function checkSumExists(row) {
           index = -1;
-          for (sumrow in $scope.summedResult) {
-            if ($scope.summedResult[sumrow].Age == row.Age) {
-              index = sumrow;
+          for (var i = 0; i < $scope.summedResult.length; i++) {
+            if ($scope.summedResult[i].Age == row.Age) {
+              index = i;
             }
           }
           return index;
@@ -76,9 +84,9 @@
 
         function checkTotalExists(row) {
           index = -1;
-          for (totalrow in $scope.totaledResult) {
-            if ($scope.totaledResult[totalrow].File_System == row.File_System) {
-              index = totalrow;
+          for (var i = 0; i < $scope.totaledResult.length; i++) {
+            if ($scope.totaledResult[i].File_System == row.File_System) {
+              index = i;
             }
           }
           return index;
@@ -109,9 +117,9 @@
             // Successful HTTP GET
             $scope.filesysOpts = response.data;
             $scope.numfs = response.data.length;
-            for (fs in $scope.filesysOpts) {
+            for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // Get list of owners
-              $http.get(site + ownerPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
+              $http.get(site + ownerPage + "?fs=" + $scope.filesysOpts[i]).then(function (response) {
                 // Successful HTTP GET
                 $scope.ownerOpts = merge($scope.ownerOpts, response.data);
               }, function (response) {
@@ -132,21 +140,20 @@
 
         $scope.query = function() {
           // Check if the user has provided the necessary inputs
-          if ($scope.selectedFilesys != "" && $scope.currentOwner != "") {
+          if ($scope.currentFilesys != "" && $scope.currentOwner != "") {
             reinitialize();
             $scope.progressbarloading = false;
             $scope.warning = false;
             // Query for each file system's data
-            for (fs in $scope.filesysOpts) {
+            for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // If the user selected a file system query or proceed of user selected all file systems
-              if ($scope.filesysOpts[fs] == $scope.selectedFilesys || $scope.selectedFilesys == "All") {
+              if ($scope.filesysOpts[i] == $scope.selectedFilesys || $scope.selectedFilesys == "All") {
                 // If the user selected all file systems we want to query for each file system except the one named "All"
-                if ($scope.filesysOpts[fs] != "All") {
-                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs] + "&owner=" + $scope.currentOwner).then(function (response) {
+                if ($scope.filesysOpts[i] != "All") {
+                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[i] + "&owner=" + $scope.currentOwner).then(function (response) {
                     // Successful HTTP GET
-                    for (row in response.data) {
-                      detailedResultRow = response.data[row];
-                      //detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                    for (var j = 0; j < response.data.length; j++) {
+                      detailedResultRow = response.data[j];
                       // Combine results from each time slot to gather summary data across all file systems
                       sumidx = checkSumExists(detailedResultRow);
                       if (sumidx != -1) {
@@ -181,7 +188,7 @@
                       //  $scope.ownerOpts.push(detailedResultRow.Owner);
                       //}
                       // Save results to respective arrays
-                      $scope.detailedResult.push(detailedResultRow);
+                      $scope.detailedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
                     }
                   }, function (response) {
                     // Failed HTTP GET
@@ -198,9 +205,21 @@
                     }
                     // Store length of resulting list to determine number of pages
                     $scope.returnedfs++;
+                    // If this is the last query to return we can handle all the post processing and show the table
                     if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
                       // If all file systems were selected add the grand total to the list so we can filter on one list
                       $scope.totaledResult.push($scope.grandTotaledResult);
+                      // Now that all results are in, we can calculate percentages
+                      for (var k = 0; k < $scope.detailedResult.length; k++) {
+                        console.log("Row " + k);
+                        console.log($scope.detailedResult[k]);
+                        total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
+                        percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
+                        $scope.detailedResult[k]["Percentage_of_Total_Files"] = percent;
+                        console.log($scope.detailedResult[k]);
+                        //$scope.detailedResult[k].Percentage_of_Total_Files = calc_percent($scope.detailedResult[k].Number_of_Files, find_total($scope.detailedResult[k].File_System, Number_of_Files));
+                        //$scope.detailedResult[k].Percentage_of_Total_Size = calc_percent($scope.detailedResult[k].Size_of_Files, find_total($scope.detailedResult[k].File_System, Size_of_Files));
+                      }
                       $scope.tableloading = false;
                       console.log("Detailed result");
                       console.log($scope.detailedResult);
@@ -215,8 +234,6 @@
                 }
               }
             }
-            // By default show the detailed result page
-            $scope.result = $scope.detailedResult;
           }
           else {
             $scope.warning = true;

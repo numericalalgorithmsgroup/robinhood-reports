@@ -49,9 +49,9 @@
             $scope.numfs = response.data.length;
             $scope.progressbarloading = false;
             console.log($scope.filesys);
-            for (fs in $scope.filesys) {
+            for (var i = 0; i < $scope.filesys.length; i++) {
               // Query for each file system's data
-              $http.get(site + sumPage + "?fs=" + $scope.filesys[fs]).then(function (response) {
+              $http.get(site + sumPage + "?fs=" + $scope.filesys[i]).then(function (response) {
                 // Successful HTTP GET
                 $scope.result.push(response.data[0]);
                 // Store length of resulting list to determine number of pages

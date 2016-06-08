@@ -74,9 +74,9 @@
 
         function checkSumExists(row) {
           index = -1;
-          for (sumrow in $scope.summedResult) {
-            if ($scope.summedResult[sumrow].Owner == row.Owner) {
-              index = sumrow;
+          for (var k = 0; k < $scope.summedResult.length; k++) {
+            if ($scope.summedResult[k].Owner == row.Owner) {
+              index = k;
             }
           }
           return index;
@@ -90,12 +90,12 @@
             $scope.filesysOpts = response.data;
             $scope.numfs = response.data.length;
             $scope.progressbarloading = false;
-            for (fs in $scope.filesysOpts) {
+            for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // Query for each file system's data
-              $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[fs]).then(function (response) {
+              $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[i]).then(function (response) {
                 // Successful HTTP GET
-                for (row in response.data) {
-                  detailedResultRow = response.data[row];
+                for (var j = 0; j < response.data.length; j++) {
+                  detailedResultRow = response.data[j];
                   detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
                   sumidx = checkSumExists(detailedResultRow);
                   if (sumidx != -1) {
