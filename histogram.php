@@ -210,15 +210,26 @@
                       // If all file systems were selected add the grand total to the list so we can filter on one list
                       $scope.totaledResult.push($scope.grandTotaledResult);
                       // Now that all results are in, we can calculate percentages
-                      for (var k = 0; k < $scope.detailedResult.length; k++) {
-                        console.log("Row " + k);
-                        console.log($scope.detailedResult[k]);
-                        total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
-                        percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
-                        $scope.detailedResult[k]["Percentage_of_Total_Files"] = percent;
-                        console.log($scope.detailedResult[k]);
-                        //$scope.detailedResult[k].Percentage_of_Total_Files = calc_percent($scope.detailedResult[k].Number_of_Files, find_total($scope.detailedResult[k].File_System, Number_of_Files));
-                        //$scope.detailedResult[k].Percentage_of_Total_Size = calc_percent($scope.detailedResult[k].Size_of_Files, find_total($scope.detailedResult[k].File_System, Size_of_Files));
+                      // If we're showing a particular file system we can use the detailed data
+                      if ($scope.selectedFilesys != "All") {
+                        for (var k = 0; k < $scope.detailedResult.length; k++) {
+                          var total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
+                          var percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
+                          $scope.detailedResult[k]["Percentage_of_Total_Files"] = percent;
+                          total = find_total($scope.detailedResult[k]["File_System"], "Size_of_Files");
+                          percent = calc_percent($scope.detailedResult[k]["Size_of_Files"], total);
+                          $scope.detailedResult[k]["Percentage_of_Total_Size"] = percent;
+                        }
+                      }
+                      else {
+                        for (var k = 0; k < $scope.summedResult.length; k++) {
+                          var total = $scope.grandTotaledResult.Number_of_Files;
+                          var percent = calc_percent($scope.summedResult[k]["Number_of_Files"], total);
+                          $scope.summedResult[k]["Percentage_of_Total_Files"] = percent;
+                          total = $scope.grandTotaledResult.Size_of_Files;
+                          percent = calc_percent($scope.summedResult[k]["Size_of_Files"], total);
+                          $scope.summedResult[k]["Percentage_of_Total_Size"] = percent;
+                        }
                       }
                       $scope.tableloading = false;
                       console.log("Detailed result");
@@ -317,13 +328,17 @@
                   <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percentage_of_Total_Files}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percentage_of_Total_Size}}</td>
                 </tr>
                 <tr class="active">
                   <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}" ng-hide="isSummarized"><div class="text-nowrap limit-cell"><b>{{ row.File_System }}</b></td>
                   <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Age }}</b></td>
                   <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Number_of_Files | humanizeInt }}</b></td>
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b></b></td>
                   <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b>{{ row.Size_of_Files | humanizeFilesize }}</b></td>
+                  <td class="text-nowrap" ng-repeat="row in totaledResult | filter:{File_System:selectedFilesys}"><div class="text-nowrap limit-cell"><b></b></td>
                 </tr>
               </tbody>
             </table>
