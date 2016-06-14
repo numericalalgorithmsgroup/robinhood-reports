@@ -19,8 +19,8 @@
               <ul class="dropdown-menu">
                 <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/histogram.php">Age Histogram</a></li>
                 <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/bigdir.php">Big Directories</a></li>
-                <li><a href="#">Interesting Files</a></li>
-                <li><a href="#">Print Files</a></li>
+                <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/fileclass.php?page=interesting">Interesting Files</a></li>
+                <li><a href="<?php echo (preg_match('/diskstatsdev/', $_SERVER["REQUEST_URI"])) ? "/diskstatsdev" : "/diskstats" ?>/fileclass.php?page=print">Print Files</a></li>
                 <li><a href="#">Largest Directories</a></li>
               </ul>
             </li>
