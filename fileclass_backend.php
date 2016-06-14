@@ -8,14 +8,14 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    $interestingsql = "SELECT id FROM ENTRIES WHERE ENTRIES.release_class LIKE BINARY 'interesting_files' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "'" . " LIMIT " . $_GET["offset"] . "," . $_GET["limit"];
+    $fileclasssql = "SELECT id FROM ENTRIES WHERE ENTRIES.release_class LIKE BINARY '" . $_GET["page"] . "_files' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "'";
 
     $outp = "[";
-    $interestingresult = $conn->query($interestingsql) or trigger_error($conn->error."[$interestingsql]");
+    $fileclassresult = $conn->query($fileclasssql) or trigger_error($conn->error."[$fileclasssql]");
   
-    while($interestingrs = $interestingresult->fetch_array(MYSQLI_ASSOC)) {
+    while($fileclassrs = $fileclassresult->fetch_array(MYSQLI_ASSOC)) {
       if ($outp != "[") {$outp .= ",";}
-      $mdsql = "SELECT this_path(parent_id,name) AS path, size, owner, gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $interestingrs["id"] . "'";
+      $mdsql = "SELECT this_path(parent_id,name) AS path, size, owner, gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $fileclassrs["id"] . "'";
       $mdresult = $conn->query($mdsql) or trigger_error($conn->error."[$mdsql]");
       $mdrs = $mdresult->fetch_array(MYSQLI_ASSOC);
 
