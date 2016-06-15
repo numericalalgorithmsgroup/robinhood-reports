@@ -14,17 +14,18 @@ foreach ($db_ro_confs as $conf) {
     $largedirresult = $conn->query($largedirsql) or trigger_error($conn->error."[$largedirsql]");
   
     while($largedirrs = $largedirresult->fetch_array(MYSQLI_ASSOC)) {
-      $dirsizesql = "SELECT SUM(ENTRIES.size) AS dirsize FROM NAMES LEFT JOIN ENTRIES ON NAMES.id=ENTRIES.id WHERE NAMES.parent_id='" . $largedirrs["id"] . "' AND ENTRIES.type='file'";
+      $dirsizesql = "SELECT SUM(ENTRIES.size) AS dirsize, COUNT(*) AS count FROM NAMES LEFT JOIN ENTRIES ON NAMES.id=ENTRIES.id WHERE NAMES.parent_id='" . $largedirrs["id"] . "' AND ENTRIES.type='file'";
       $dirsizeresult = $conn->query($dirsizesql) or trigger_error($conn->error."[$dirsizesql]");
       $dirsizers = $dirsizeresult->fetch_array(MYSQLI_ASSOC);
 
       # Not very useful to display directories with no files in them
       if ($dirsizers["dirsize"] != 0) {
         if ($outp != "[") {$outp .= ",";}
-        $outp .= '{"Directory":"'            . str_replace('0x200000007:0x1:0x0', $conf["fs"], $largedirrs["path"]) . '",';
-        $outp .= '"Size_of_Files_Within":'   . (is_null($dirsizers["dirsize"]) ? 0 : $dirsizers["dirsize"])  . ',';
-        $outp .= '"Owner":"'                 . $largedirrs["owner"] . '",';
-        $outp .= '"Group":"'                 . $largedirrs["gr_name"] . '"}';
+        $outp .= '{"Directory":"'              . str_replace('0x200000007:0x1:0x0', $conf["fs"], $largedirrs["path"]) . '",';
+        $outp .= '"Size_of_Files_Within":'     . (is_null($dirsizers["dirsize"]) ? 0 : $dirsizers["dirsize"])  . ',';
+        $outp .= '"Number_of_Files_Within":'   . (is_null($dirsizers["count"]) ? 0 : $dirsizers["count"])  . ',';
+        $outp .= '"Owner":"'                   . $largedirrs["owner"] . '",';
+        $outp .= '"Group":"'                   . $largedirrs["gr_name"] . '"}';
       }
     }
     $outp .= "]";
