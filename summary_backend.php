@@ -9,7 +9,7 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    $usersql = "SELECT COUNT(DISTINCT owner) AS Users from ACCT_STAT";
+    $usersql = "SELECT COUNT(DISTINCT owner) AS Users from ACCT_STAT WHERE count>0";
     $numfilesql = "SELECT SUM(count) AS Files FROM ACCT_STAT WHERE type='file'";
     $sizesql = "SELECT SUM(blocks) * 512 AS Size FROM ACCT_STAT";
     $oldnumfilesql = "SELECT COUNT(*) AS Oldfiles FROM ENTRIES WHERE type='file' AND last_mod<" . $sixmonthsago;
