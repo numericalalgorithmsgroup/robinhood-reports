@@ -3,6 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once("dbroconf.php");
+require_once("helper_php/time.php");
 
 foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
@@ -18,14 +19,18 @@ foreach ($db_ro_confs as $conf) {
       $dirsizeresult = $conn->query($dirsizesql) or trigger_error($conn->error."[$dirsizesql]");
       $dirsizers = $dirsizeresult->fetch_array(MYSQLI_ASSOC);
 
+      $olddirsizesql = "SELECT SUM(ENTRIES.size) AS olddirsize, COUNT(*) AS oldcount FROM NAMES LEFT JOIN ENTRIES ON NAMES.id=ENTRIES.id WHERE NAMES.parent_id='" . $largedirrs["id"] . "' AND ENTRIES.type='file' AND ENTRIES.last_mod<" . $sixmonthsago;
+      $olddirsizeresult = $conn->query($olddirsizesql) or trigger_error($conn->error."[$olddirsizesql]");
+      $olddirsizers = $olddirsizeresult->fetch_array(MYSQLI_ASSOC);
+
       # Not very useful to display directories with no files in them
       if ($dirsizers["dirsize"] != 0) {
         if ($outp != "[") {$outp .= ",";}
         $outp .= '{"Directory":"'              . str_replace('0x200000007:0x1:0x0', $conf["fs"], $largedirrs["path"]) . '",';
-        $outp .= '"Size_of_Files_Within":'     . (is_null($dirsizers["dirsize"]) ? 0 : $dirsizers["dirsize"])  . ',';
-        $outp .= '"Number_of_Files_Within":'   . (is_null($dirsizers["count"]) ? 0 : $dirsizers["count"])  . ',';
-        $outp .= '"Owner":"'                   . $largedirrs["owner"] . '",';
-        $outp .= '"Group":"'                   . $largedirrs["gr_name"] . '"}';
+        $outp .= '"Size_of_Files":'            . (is_null($dirsizers["dirsize"]) ? 0 : $dirsizers["dirsize"])  . ',';
+        $outp .= '"Number_of_Files":'          . (is_null($dirsizers["count"]) ? 0 : $dirsizers["count"])  . ',';
+        $outp .= '"Size_of_Old_Files":'        . (is_null($olddirsizers["olddirsize"]) ? 0 : $olddirsizers["olddirsize"])  . ',';
+        $outp .= '"Number_of_Old_Files":'      . (is_null($olddirsizers["oldcount"]) ? 0 : $olddirsizers["oldcount"])  . '}';
       }
     }
     $outp .= "]";

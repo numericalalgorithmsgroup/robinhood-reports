@@ -47,7 +47,7 @@
         $scope.currentFilesys = "";
         $scope.currentOwner = "";
         // Set the default sorting type
-        $scope.sortType = "Size_of_Files_Within";
+        $scope.sortType = "Size_of_Files";
         // Set the default sorting order
         $scope.sortReverse = true;
 
@@ -218,10 +218,10 @@
               <tbody>
                 <tr ng-repeat="row in result | filter:filterInput | orderBy:sortType:sortReverse | limitTo:numPerPage:(currentPage-1)*numPerPage">
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Directory }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Files_Within | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Files_Within | humanizeInt }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Owner }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Group }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Files | humanizeInt }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Old_Files | humanizeInt }}</td>
                 </tr>
               </tbody>
             </table>
