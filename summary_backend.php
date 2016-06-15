@@ -11,9 +11,9 @@ foreach ($db_ro_confs as $conf) {
 
     $usersql = "SELECT COUNT(DISTINCT owner) AS Users from ACCT_STAT";
     $numfilesql = "SELECT SUM(count) AS Files FROM ACCT_STAT WHERE type='file'";
-    $sizesql = "SELECT SUM(size) AS Size FROM ACCT_STAT";
+    $sizesql = "SELECT SUM(blocks) * 512 AS Size FROM ACCT_STAT";
     $oldnumfilesql = "SELECT COUNT(*) AS Oldfiles FROM ENTRIES WHERE type='file' AND last_mod<" . $sixmonthsago;
-    $oldsizesql = "SELECT SUM(size) AS Oldsize FROM ENTRIES WHERE ENTRIES.last_mod<" . $sixmonthsago;
+    $oldsizesql = "SELECT SUM(blocks) * 512 AS Oldsize FROM ENTRIES WHERE ENTRIES.last_mod<" . $sixmonthsago;
 
     $outp = "[";
     $userresult = $conn->query($usersql) or trigger_error($conn->error."[$usersql]");
