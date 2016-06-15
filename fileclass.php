@@ -240,7 +240,11 @@
             <uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
           </div>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div class="text-center">
+            <b>{{ totalItems | humanizeInt }} files found</b>
+          </div>
+        </div>
       </div>
     </div>
     <?php require_once("include_php/footer.php"); ?>
