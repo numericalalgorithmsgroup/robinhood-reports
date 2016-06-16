@@ -98,7 +98,7 @@
       <div class="row" ng-hide="tableloading">
         <div class="col-md-12"> 
           <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover" style="table-layout: fixed">
+            <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr class="active">
                   <th ng-repeat="(key,value) in result[0]" style="word-wrap: break-word">
@@ -115,10 +115,11 @@
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Users | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Total_Space | humanizeFilesize}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Used_Space | humanizeFilesize}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Available_Space | humanizeFilesize}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Old_Space }}</td>
                 </tr>
               </tbody>
