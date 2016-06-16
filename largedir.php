@@ -156,7 +156,7 @@
   </head>
   <body ng-app="tableApp" ng-controller="tableCtrl">
     <?php require_once("include_php/navbar.php"); ?>
-    <div class="container-fluid">
+    <div class="container-fluid ng-cloak">
       <div class="row vertical-align" style="margin-bottom:15px">
         <div class="col-md-4 text-center">
           <form class="form-inline">
