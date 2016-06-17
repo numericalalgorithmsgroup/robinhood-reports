@@ -42,7 +42,7 @@
           $scope.returnedfs = 0;
           $scope.selectedFilesys = $scope.currentFilesys;
         }
-        $scope.currentFilesys = "";
+        $scope.currentFilesys = "ALL";
         $scope.currentOwner = "";
         // Set the default sorting type
         $scope.sortType = "File_System";
@@ -117,16 +117,23 @@
             // Successful HTTP GET
             $scope.filesysOpts = response.data;
             $scope.numfs = response.data.length;
+            var returnedOptions = 0;
             for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // Get list of owners
               $http.get(site + ownerPage + "?fs=" + $scope.filesysOpts[i]).then(function (response) {
                 // Successful HTTP GET
                 $scope.ownerOpts = merge($scope.ownerOpts, response.data);
+                returnedOptions++;
               }, function (response) {
                 // Failed HTTP GET
                 console.log("Failed to load page");
               }).finally(function() {
                 // Upon success or failure
+                if (returnedOptions == $scope.filesysOpts.length) {
+                  $scope.filesysOpts.sort();
+                  $scope.ownerOpts.sort();
+                  $scope.filesysOpts.unshift("ALL");
+                }
               });
             }
           }, function (response) {
@@ -134,22 +141,21 @@
             console.log("Failed to load page");
           }).finally(function() {
             // Upon success or failure
-            $scope.filesysOpts.unshift("All");
           });
         }
 
         $scope.query = function() {
           // Check if the user has provided the necessary inputs
-          if ($scope.currentFilesys != "" && $scope.currentOwner != "") {
+          if ($scope.currentOwner != "") {
             reinitialize();
             $scope.progressbarloading = false;
             $scope.warning = false;
             // Query for each file system's data
             for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // If the user selected a file system query or proceed of user selected all file systems
-              if ($scope.filesysOpts[i] == $scope.selectedFilesys || $scope.selectedFilesys == "All") {
-                // If the user selected all file systems we want to query for each file system except the one named "All"
-                if ($scope.filesysOpts[i] != "All") {
+              if ($scope.filesysOpts[i] == $scope.selectedFilesys || $scope.selectedFilesys == "ALL") {
+                // If the user selected all file systems we want to query for each file system except the one named "ALL"
+                if ($scope.filesysOpts[i] != "ALL") {
                   $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[i] + "&owner=" + $scope.currentOwner).then(function (response) {
                     // Successful HTTP GET
                     for (var j = 0; j < response.data.length; j++) {
@@ -195,7 +201,7 @@
                     console.log("Failed to load page");
                   }).finally(function() {
                     // Upon success or failure
-                    if ($scope.selectedFilesys == "All") {
+                    if ($scope.selectedFilesys == "ALL") {
                       $scope.result = $scope.summedResult;
                       $scope.isSummarized = true;
                     }
@@ -206,12 +212,12 @@
                     // Store length of resulting list to determine number of pages
                     $scope.returnedfs++;
                     // If this is the last query to return we can handle all the post processing and show the table
-                    if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "All") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "All")) {
+                    if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "ALL") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "ALL")) {
                       // If all file systems were selected add the grand total to the list so we can filter on one list
                       $scope.totaledResult.push($scope.grandTotaledResult);
                       // Now that all results are in, we can calculate percentages
                       // If we're showing a particular file system we can use the detailed data
-                      if ($scope.selectedFilesys != "All") {
+                      if ($scope.selectedFilesys != "ALL") {
                         for (var k = 0; k < $scope.detailedResult.length; k++) {
                           var total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
                           var percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
@@ -271,7 +277,7 @@
             <div class="form-group">
               <label>File System:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="currentFilesys" ng-options="opt for opt in filesysOpts | orderBy"></select>
+                <select class="form-control" ng-model="currentFilesys" ng-options="opt for opt in filesysOpts"></select>
               </div>
             </div>
           </form>
@@ -281,7 +287,7 @@
             <div class="form-group">
               <label>Owner:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="currentOwner" ng-options="opt for opt in ownerOpts | orderBy"></select>
+                <select class="form-control" ng-model="currentOwner" ng-options="opt for opt in ownerOpts"></select>
               </div>
             </div>
           </form>
@@ -303,7 +309,7 @@
         <div class="col-md-3"></div>
         <div class="col-md-6">
           <div class="alert alert-danger text-center" role="alert">
-            <b>Please select a file system and owner to continue.</b>
+            <b>Please select an owner to continue.</b>
           </div>
         </div>
         <div class="col-md-3"></div>
