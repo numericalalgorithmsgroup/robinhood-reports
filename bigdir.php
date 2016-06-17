@@ -32,8 +32,8 @@
           $scope.ownerOpts = [];
           $scope.numfs = 1;
         }
-        $scope.selectedFilesys = "";
-        $scope.selectedOwner = "";
+        $scope.selectedFilesys = "ALL";
+        $scope.selectedOwner = "ALL";
         // Set the default sorting type
         $scope.sortType = "Number_of_Files";
         // Set the default sorting order
@@ -73,14 +73,16 @@
                 // Store length of resulting list to determine number of pages
                 $scope.returnedfs++;
                 if ($scope.returnedfs == $scope.numfs) {
+                  // Add ALL item to beginning of array to allow user to select all file systems
+                  $scope.filesysOpts.sort();
+                  $scope.ownerOpts.sort();
+                  $scope.filesysOpts.unshift("ALL");
+                  $scope.ownerOpts.unshift("ALL");
                   $scope.tableloading = false;
                   console.log($scope.result);
                 }
               });
             }
-            // Add empty item to beginning of array to allow user to select all file systems
-            $scope.filesysOpts.unshift("");
-            $scope.ownerOpts.unshift("");
           }, function (response) {
             // Failed HTTP GET
             console.log("Failed to load page");
@@ -115,7 +117,7 @@
             <div class="form-group">
               <label>File System:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts | orderBy"></select>
+                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts"></select>
               </div>
             </div>
           </form>
@@ -125,7 +127,7 @@
             <div class="form-group">
               <label>Owner:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="selectedOwner" ng-options="opt for opt in ownerOpts | orderBy"></select>
+                <select class="form-control" ng-model="selectedOwner" ng-options="opt for opt in ownerOpts"></select>
               </div>
             </div>
           </form>
@@ -147,7 +149,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in result | filter:{Directory:selectedFilesys} | filter:{Owner:selectedOwner} | orderBy:sortType:sortReverse">
+                <tr ng-repeat="row in result | filter: (selectedFilesys != 'ALL' ? {Directory:selectedFilesys} : '') | filter: (selectedOwner != 'ALL' ? {Owner:selectedOwner} : '') | orderBy:sortType:sortReverse">
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Directory }}</td>
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Files | humanizeInt }}</td>
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Owner }}</td>
