@@ -226,8 +226,8 @@
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Directory }}</td>
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Files | humanizeFilesize }}</td>
                   <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Files | humanizeInt }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Untouched_Files | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Untouched_Files | humanizeInt }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap">{{ row.Number_of_Old_Files | humanizeInt }}</td>
                 </tr>
               </tbody>
             </table>

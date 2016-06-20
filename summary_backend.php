@@ -38,9 +38,9 @@ foreach ($db_ro_confs as $conf) {
     $outp .= '"Used_Space":'          . (is_null($sizers["Size"]) ? 0 : $sizers["Size"])  . ',';
     $outp .= '"Available_Space":'     . (is_null($available) ? 0 : $available)  . ',';
     $outp .= '"Number_of_Files":'     . (is_null($numfilesrs["Files"]) ? 0 : $numfilesrs["Files"])  . ',';
-    $outp .= '"Size_of_Untouched_Files":'   . (is_null($oldsizers["Oldsize"]) ? 0 : $oldsizers["Oldsize"])  . ',';
-    $outp .= '"Number_of_Untouched_Files":' . (is_null($oldnumfilesrs["Oldfiles"]) ? 0 : $oldnumfilesrs["Oldfiles"])  . ',';
-    $outp .= '"Percent_Untouched_Space":'   . (is_null($percentold) ? 0: $percentold) . '}';
+    $outp .= '"Size_of_Old_Files":'   . (is_null($oldsizers["Oldsize"]) ? 0 : $oldsizers["Oldsize"])  . ',';
+    $outp .= '"Number_of_Old_Files":' . (is_null($oldnumfilesrs["Oldfiles"]) ? 0 : $oldnumfilesrs["Oldfiles"])  . ',';
+    $outp .= '"Percent_Old_Space":'   . (is_null($percentold) ? 0: $percentold) . '}';
     $outp .= "]";
     echo($outp);
   }
