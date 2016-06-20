@@ -9,15 +9,15 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    $zerodaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod>" . $thirtydaysago;
-    $thirtydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $thirtydaysago . " AND ENTRIES.last_mod>" . $sixtydaysago;
-    $sixtydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $sixtydaysago . " AND ENTRIES.last_mod>" . $ninetydaysago;
-    $ninetydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $ninetydaysago . " AND ENTRIES.last_mod>" . $sixmonthsago;
-    $sixmonthsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $sixmonthsago . " AND ENTRIES.last_mod>" . $oneyearago;
-    $oneyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $oneyearago . " AND ENTRIES.last_mod>" . $twoyearsago;
-    $twoyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $twoyearsago . " AND ENTRIES.last_mod>" . $threeyearsago;
-    $threeyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $threeyearsago . " AND ENTRIES.last_mod>" . $fiveyearsago;
-    $fiveyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_mod<=" . $fiveyearsago;
+    $zerodaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access>" . $thirtydaysago;
+    $thirtydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $thirtydaysago . " AND ENTRIES.last_access>" . $sixtydaysago;
+    $sixtydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixtydaysago . " AND ENTRIES.last_access>" . $ninetydaysago;
+    $ninetydaysql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $ninetydaysago . " AND ENTRIES.last_access>" . $sixmonthsago;
+    $sixmonthsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixmonthsago . " AND ENTRIES.last_access>" . $oneyearago;
+    $oneyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $oneyearago . " AND ENTRIES.last_access>" . $twoyearsago;
+    $twoyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $twoyearsago . " AND ENTRIES.last_access>" . $threeyearsago;
+    $threeyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $threeyearsago . " AND ENTRIES.last_access>" . $fiveyearsago;
+    $fiveyearsql = "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $fiveyearsago;
 
     $outp = "[";
     $zerodayresult = $conn->query($zerodaysql) or trigger_error($conn->error."[$zerodaysql]");
