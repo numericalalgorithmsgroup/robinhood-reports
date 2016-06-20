@@ -19,7 +19,7 @@ foreach ($db_ro_confs as $conf) {
       $dirsizeresult = $conn->query($dirsizesql) or trigger_error($conn->error."[$dirsizesql]");
       $dirsizers = $dirsizeresult->fetch_array(MYSQLI_ASSOC);
 
-      $olddirsizesql = "SELECT SUM(ENTRIES.size) AS olddirsize, COUNT(*) AS oldcount FROM NAMES LEFT JOIN ENTRIES ON NAMES.id=ENTRIES.id WHERE NAMES.parent_id='" . $largedirrs["id"] . "' AND ENTRIES.type='file' AND ENTRIES.last_mod<" . $sixmonthsago;
+      $olddirsizesql = "SELECT SUM(ENTRIES.size) AS olddirsize, COUNT(*) AS oldcount FROM NAMES LEFT JOIN ENTRIES ON NAMES.id=ENTRIES.id WHERE NAMES.parent_id='" . $largedirrs["id"] . "' AND ENTRIES.type='file' AND ENTRIES.last_access<" . $sixmonthsago;
       $olddirsizeresult = $conn->query($olddirsizesql) or trigger_error($conn->error."[$olddirsizesql]");
       $olddirsizers = $olddirsizeresult->fetch_array(MYSQLI_ASSOC);
 

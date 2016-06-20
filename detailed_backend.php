@@ -11,7 +11,7 @@ foreach ($db_ro_confs as $conf) {
 
     $detailsql = "SELECT full.owner, full.countsum, full.sizesum, old.oldcountsum, old.oldsizesum ";
     $detailsql .= "FROM (select owner,sum(count) AS countsum, sum(size) AS sizesum from ACCT_STAT WHERE type='file' GROUP BY owner) AS full ";
-    $detailsql .= "LEFT JOIN (select owner,count(id) AS oldcountsum,sum(size) AS oldsizesum from ENTRIES WHERE type='file' AND last_mod<";
+    $detailsql .= "LEFT JOIN (select owner,count(id) AS oldcountsum,sum(size) AS oldsizesum from ENTRIES WHERE type='file' AND last_access<";
     $detailsql .= $sixmonthsago . " GROUP BY owner) AS old ON full.owner = old.owner";
 
     $outp = "[";
