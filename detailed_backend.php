@@ -23,8 +23,8 @@ foreach ($db_ro_confs as $conf) {
       $outp .= '"Owner":"'              . $detailrs["owner"] . '",';
       $outp .= '"Number_of_Files":'     . (is_null($detailrs["countsum"]) ? 0 : $detailrs["countsum"])  . ',';
       $outp .= '"Size_of_Files":'       . (is_null($detailrs["sizesum"]) ? 0 : $detailrs["sizesum"])  . ',';
-      $outp .= '"Number_of_Untouched_Files":' . (is_null($detailrs["oldcountsum"]) ? 0 : $detailrs["oldcountsum"])  . ',';
-      $outp .= '"Size_of_Untouched_Files":'   . (is_null($detailrs["oldsizesum"]) ? 0 : $detailrs["oldsizesum"])  . '}';
+      $outp .= '"Number_of_Old_Files":' . (is_null($detailrs["oldcountsum"]) ? 0 : $detailrs["oldcountsum"])  . ',';
+      $outp .= '"Size_of_Old_Files":'   . (is_null($detailrs["oldsizesum"]) ? 0 : $detailrs["oldsizesum"])  . '}';
     }
     $outp .= "]";
     echo($outp);

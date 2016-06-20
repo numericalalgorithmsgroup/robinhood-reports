@@ -118,9 +118,9 @@
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Used_Space | humanizeFilesize}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Available_Space | humanizeFilesize}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Untouched_Files | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Untouched_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Untouched_Space }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Old_Space }}</td>
                 </tr>
               </tbody>
             </table>
