@@ -68,7 +68,7 @@
             return 0;
           }
           else { // else calculate the old space and add it to the row
-            return parseFloat(((row.Size_of_Old_Files / row.Size_of_Files) * 100).toFixed(2));
+            return parseFloat(((row.Size_of_Untouched_Files / row.Size_of_Files) * 100).toFixed(2));
           }
         }
 
@@ -96,15 +96,15 @@
                 // Successful HTTP GET
                 for (var j = 0; j < response.data.length; j++) {
                   detailedResultRow = response.data[j];
-                  detailedResultRow.Percent_Old_Space = calc_percent(detailedResultRow);
+                  detailedResultRow.Percent_Untouched_Space = calc_percent(detailedResultRow);
                   sumidx = checkSumExists(detailedResultRow);
                   if (sumidx != -1) {
                     // A row already exists for this owner at sumidx so just add to it
                     $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
                     $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
-                    $scope.summedResult[sumidx].Number_of_Old_Files += detailedResultRow.Number_of_Old_Files;
-                    $scope.summedResult[sumidx].Size_of_Old_Files += detailedResultRow.Size_of_Old_Files;
-                    $scope.summedResult[sumidx].Percent_Old_Space = calc_percent($scope.summedResult[sumidx]);
+                    $scope.summedResult[sumidx].Number_of_Untouched_Files += detailedResultRow.Number_of_Untouched_Files;
+                    $scope.summedResult[sumidx].Size_of_Untouched_Files += detailedResultRow.Size_of_Untouched_Files;
+                    $scope.summedResult[sumidx].Percent_Untouched_Space = calc_percent($scope.summedResult[sumidx]);
                   }
                   else {
                     // A row does not already exist so create a new summary row
@@ -220,9 +220,9 @@
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Owner}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Files | humanizeFilesize}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Old_Files | humanizeInt}}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Old_Files | humanizeFilesize }}</td>
-                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Old_Space }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Untouched_Files | humanizeInt}}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Size_of_Untouched_Files | humanizeFilesize }}</td>
+                  <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Percent_Untouched_Space }}</td>
                 </tr>
               </tbody>
             </table>
