@@ -27,6 +27,7 @@
           $scope.filesysOpts = [];
           $scope.ownerOpts = [];
           $scope.warning = false;
+          $scope.info = true;
           $scope.numfs = 1;
           $scope.numPerPage = 1000;
           $scope.numPerPageOpts = [5, 10, 25, 50, 100, 250, 1000];
@@ -114,6 +115,7 @@
             reinitialize();
             $scope.progressbarloading = false;
             $scope.warning = false;
+            $scope.info = false;
             // Query for each file system's data
             for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // If the user selected a file system query or proceed of user selected all file systems
@@ -146,6 +148,7 @@
           }
           else {
             $scope.warning = true;
+            $scope.info = false;
           }
         }
       onetimeinitialize();
@@ -197,10 +200,10 @@
           <div class="bounce3"></div>
         </div>
       </div>
-      <div class="row" ng-show="warning">
+      <div class="row" ng-show="warning || info">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-          <div class="alert alert-danger text-center" role="alert">
+          <div class="alert text-center" role="alert" ng-class="{'alert-danger': warning, 'alert-info': info}">
             <b>Please select an owner to continue.</b>
           </div>
         </div>
