@@ -33,6 +33,8 @@
           $scope.filesysOpts = [];
           $scope.ownerOpts = [];
           $scope.numfs = 1;
+          $scope.summarizeHidden = false;
+          $scope.fsHidden = false;
         }
         $scope.selectedFilesys = "ALL";
         $scope.selectedOwner = "ALL";
@@ -54,11 +56,23 @@
             $scope.result = $scope.summedResult;
             $scope.sortType = "Owner";
             $scope.sortReverse = false;
+            $scope.selectedFilesys = "ALL";
+            $scope.fsHidden = true;
           }
           else {
             $scope.result = $scope.detailedResult;
             $scope.sortType = "File_System";
             $scope.sortReverse = false;
+            $scope.fsHidden = false;
+          }
+        }
+
+        $scope.fsChanged = function() {
+          if ($scope.selectedFilesys != "ALL") {
+            $scope.summarizeHidden = true;
+          }
+          else {
+            $scope.summarizeHidden = false;
           }
         }
 
@@ -168,11 +182,11 @@
       </div>
       <div class="row vertical-align" ng-hide="tableloading" style="margin-bottom:15px">
         <div class="col-md-4 text-center">
-          <form class="form-inline">
+          <form class="form-inline" ng-hide="fsHidden">
             <div class="form-group">
               <label>File System:</label>
               <div class="input-group">
-                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts"></select>
+                <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts" ng-change="fsChanged()"></select>
               </div>
             </div>
           </form>
@@ -188,7 +202,7 @@
           </form>
         </div>
         <div class="col-md-4 text-center">
-          <form class="form-inline">
+          <form class="form-inline" ng-hide="summarizeHidden">
             <div class="form-group">
               <div class="checkbox">
                 <label>
