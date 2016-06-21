@@ -181,7 +181,7 @@
         <div class="col-md-3"></div>
       </div>
       <div class="row vertical-align" ng-hide="tableloading" style="margin-bottom:15px">
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline" ng-hide="fsHidden">
             <div class="form-group">
               <label>File System:</label>
@@ -191,7 +191,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>Owner:</label>
@@ -201,7 +201,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline" ng-hide="summarizeHidden">
             <div class="form-group">
               <div class="checkbox">
@@ -211,6 +211,13 @@
               </div>
             </div>
           </form>
+        </div>
+        <div class="col-md-3 text-center">
+          <div class="text-center">
+            <button type="button" class="btn btn-primary">
+              <i class="fa fa-info-circle fa-lg"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div class="row" ng-hide="tableloading">
