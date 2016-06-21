@@ -14,3 +14,5 @@
     <link rel="stylesheet" href="css/table-ultracondensed.css" type="text/css">
     <!-- Footer styling based on Bootstrap examples -->
     <link rel="stylesheet" href="css/footer.css" type="text/css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css" type="text/css">

@@ -127,6 +127,16 @@
           </div>
         </div>
       </div>
+      <div class="row vertical-align" ng-hide="tableloading">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+          <div class="text-center">
+            <button type="button" class="btn btn-primary">
+              <i class="fa fa-info-circle fa-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <?php require_once("include_php/footer.php"); ?>
     <?php require_once("include_php/trailing_js.php"); ?>

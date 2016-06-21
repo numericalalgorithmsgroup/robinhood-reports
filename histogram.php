@@ -275,7 +275,7 @@
     <?php require_once("include_php/navbar.php"); ?>
     <div class="container-fluid ng-cloak">
       <div class="row vertical-align" style="margin-bottom:15px">
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>File System:</label>
@@ -285,7 +285,7 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <div class="form-group">
               <label>Owner:</label>
@@ -295,10 +295,17 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
           <form class="form-inline">
             <button type="button" class="btn btn-primary" ng-click="query()">Query</button>
           </form>
+        </div>
+        <div class="col-md-3 text-center">
+          <div class="text-center">
+            <button type="button" class="btn btn-primary">
+              <i class="fa fa-info-circle fa-lg"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div class="row" ng-show="tableloading && !progressbarloading">
