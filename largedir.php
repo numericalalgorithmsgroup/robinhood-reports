@@ -189,7 +189,7 @@
         </div>
         <div class="col-md-3 text-center">
           <form class="form-inline">
-            <button type="button" class="btn btn-primary" ng-click="query()">Query</button>
+            <button type="button" class="btn btn-primary" ng-click="query()"><i class="fa fa-search"></i> Query</button>
           </form>
         </div>
         <div class="col-md-3 text-center">
