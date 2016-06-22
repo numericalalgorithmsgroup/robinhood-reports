@@ -189,13 +189,13 @@
         </div>
         <div class="col-md-3 text-center">
           <form class="form-inline">
-            <button type="button" class="btn btn-primary" ng-click="query()"><i class="fa fa-search"></i> Search</button>
+            <button type="button" class="btn btn-primary" ng-click="query()"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
           </form>
         </div>
         <div class="col-md-3 text-center">
           <div class="text-center">
             <button type="button" class="btn btn-primary">
-              <i class="fa fa-info-circle fa-lg"></i>
+              <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
           </div>
         </div>
