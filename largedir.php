@@ -192,11 +192,31 @@
             <button type="button" class="btn btn-primary" ng-click="query()"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
           </form>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-3">
           <div class="text-center">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".info-modal">
               <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
+          </div>
+          <div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">About This Page</h4>
+                </div>
+                <div class="modal-body">
+                  <ul>
+                    <li>The data in the table can be sorted by clicking on each column header.</li>
+                    <li>The age of a file is based on the last time it was read.  <b>The HPC strives to have no data older than 6 months old on these file systems.</b></li>
+                    <li>The size and number of files found immediately within each directory are listed.</li>
+                    <li>Long results may be split into multiple pages.  Controls for the length of the results and switching pages are available at the bottom of the page.</li>
+                    <li>The total number of results is listed at the bottom of the page.</li>
+                    <li>This list is a good place to start finding data that should be removed from HPC file systems.  <b>If you have more than 100,000 files to delete, please contact the HPC System Administration Team at <a href="mailto:admin@example.org">admin@example.org</a> for assistance.</b></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

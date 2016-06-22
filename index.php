@@ -130,9 +130,25 @@
       <div class="row vertical-align" ng-hide="tableloading">
         <div class="col-md-12">
           <div class="pull-right">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".info-modal">
               <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
+            <div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">About This Page</h4>
+                  </div>
+                  <div class="modal-body">
+                    <ul>
+                      <li>The data in the table can be sorted by clicking on each column header.</li>
+                      <li>An "old" file has not been read in the past 6 months.  <b>The HPC strives to have no data older than 6 months old on these file systems.</b></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

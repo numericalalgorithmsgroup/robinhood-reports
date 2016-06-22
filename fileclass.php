@@ -192,11 +192,67 @@
             <button type="button" class="btn btn-primary" ng-click="query()"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
           </form>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-3">
           <div class="text-center">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".info-modal">
               <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
+          </div>
+          <div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">About This Page</h4>
+                </div>
+                <div class="modal-body">
+                  <ul>
+                    <li>The data in the table can be sorted by clicking on each column header.</li>
+                    <li>Long results may be split into multiple pages.  Controls for the length of the results and switching pages are available at the bottom of the page.</li>
+                    <li>The total number of results is listed at the bottom of the page.</li>
+                  <?php
+                    if ($_GET["page"] == "interesting") {
+                    echo "<li><b>HPC parallel filesystems are not backed up.  Files that cannot be easily recreated or contain intellectual property should be stored on file systems that are backed up.  /hpcdata is a file system that is backed up.</b></li>
+                    <li>Files ending in these extensions are included in this list:</li>
+                    <ul>
+                      <li>.ash</li>
+                      <li>.bash</li>
+                      <li>.csh</li>
+                      <li>.ksh</li>
+                      <li>.sh</li>
+                      <li>.perl</li>
+                      <li>.pl</li>
+                      <li>.py</li>
+                      <li>.rb</li>
+                      <li>.c</li>
+                      <li>.f</li>
+                      <li>.h</li>
+                      <li>.m</li>
+                      <li>.cpp</li>
+                      <li>.cpx</li>
+                      <li>.cxx</li>
+                      <li>.hpp</li>
+                      <li>.hpx</li>
+                      <li>.hxx</li>
+                      <li>.f77</li>
+                      <li>.f90</li>
+                      <li>.jar</li>
+                      <li>.java</li>
+                      <li>.js</li>
+                      <li>makefile</li>
+                      <li>Makefile</li>
+                      <li>.job</li>
+                      <li>.par</li>
+                    </ul>";
+                  }
+                  elseif ($_GET["page"] == "print") {
+                    echo "<li><b>After a job has completed, and output checked, print files should be deleted.</b></li>";
+                  }
+                  ?>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
