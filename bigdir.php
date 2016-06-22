@@ -115,7 +115,7 @@
         <div class="col-md-4 text-center">
           <form class="form-inline">
             <div class="form-group">
-              <label>File System:</label>
+              <label><i class="fa fa-files-o"></i>&nbsp;&nbsp;File System:</label>
               <div class="input-group">
                 <select class="form-control" ng-model="selectedFilesys" ng-options="opt for opt in filesysOpts"></select>
               </div>
@@ -125,7 +125,7 @@
         <div class="col-md-4 text-center">
           <form class="form-inline">
             <div class="form-group">
-              <label>Owner:</label>
+              <label><i class="fa fa-user"></i>&nbsp;&nbsp;Owner:</label>
               <div class="input-group">
                 <select class="form-control" ng-model="selectedOwner" ng-options="opt for opt in ownerOpts"></select>
               </div>
@@ -135,7 +135,7 @@
         <div class="col-md-4 text-center">
           <div class="text-center">
             <button type="button" class="btn btn-primary">
-              <i class="fa fa-info-circle fa-lg"></i>
+              <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
           </div>
         </div>
