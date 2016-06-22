@@ -208,7 +208,7 @@
                 <div class="modal-body">
                   <ul>
                     <li>The data in the table can be sorted by clicking on each column header.</li>
-                    <li>The age of a file is based on the last time it was read.  <b>The HPC strives to have no data older than 6 months old on these file systems.</b></li>
+                    <li>An "old" file has not been read in the past 6 months.  <b>The HPC strives to have no data older than 6 months old on these file systems.</b></li>
                     <li>The size and number of files found immediately within each directory are listed.</li>
                     <li>Long results may be split into multiple pages.  Controls for the length of the results and switching pages are available at the bottom of the page.</li>
                     <li>The total number of results is listed at the bottom of the page.</li>
