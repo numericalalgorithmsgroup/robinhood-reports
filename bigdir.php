@@ -132,11 +132,27 @@
             </div>
           </form>
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-4">
           <div class="text-center">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".info-modal">
               <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
+          </div>
+          <div class="modal fade info-modal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">About This Page</h4>
+                </div>
+                <div class="modal-body">
+                  <ul>
+                    <li>The data in the table can be sorted by clicking on each column header.</li>
+                    <li><b>Directories with too many files are inefficient; they can cause performance and locking issues.  The number of files in a single directory should not exceed 50,000.</b></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
