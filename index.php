@@ -128,11 +128,10 @@
         </div>
       </div>
       <div class="row vertical-align" ng-hide="tableloading">
-        <div class="col-md-9"></div>
-        <div class="col-md-3">
-          <div class="text-center">
+        <div class="col-md-12">
+          <div class="pull-right">
             <button type="button" class="btn btn-primary">
-              <i class="fa fa-info-circle fa-lg"></i>
+              <i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Info
             </button>
           </div>
         </div>
