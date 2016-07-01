@@ -30,6 +30,8 @@
           $scope.info = true;
           $scope.numfs = 1;
           $scope.isSummarized = false;
+          $scope.numAges = 9;
+          $scope.ages = ["<30 Days", "30 - 60 Days", "60 - 90 Days", "90 Days - 6 Months", "6 Months - 1 Year", "1 - 2 Years", "2 - 3 Years", "3 - 5 Years", ">5 Years"];
         }
         reinitialize = function() {
           // Show loading spinners until AJAX returns
@@ -76,8 +78,10 @@
         function checkSumExists(row) {
           index = -1;
           for (var i = 0; i < $scope.summedResult.length; i++) {
-            if ($scope.summedResult[i].Age == row.Age) {
-              index = i;
+            if ($scope.summedResult[i] != null) {
+              if ($scope.summedResult[i].Age == row.Age) {
+                index = i;
+              }
             }
           }
           return index;
@@ -158,98 +162,103 @@
               if ($scope.filesysOpts[i] == $scope.selectedFilesys || $scope.selectedFilesys == "ALL") {
                 // If the user selected all file systems we want to query for each file system except the one named "ALL"
                 if ($scope.filesysOpts[i] != "ALL") {
-                  $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[i] + "&owner=" + $scope.currentOwner).then(function (response) {
-                    // Successful HTTP GET
-                    for (var j = 0; j < response.data.length; j++) {
-                      detailedResultRow = response.data[j];
-                      // Combine results from each time slot to gather summary data across all file systems
-                      sumidx = checkSumExists(detailedResultRow);
-                      if (sumidx != -1) {
-                        // A row already exists for this owner and age at sumidx so just add to it
-                        $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
-                        $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
-                      }
-                      else {
-                        // A row does not already exist so create a new summary row
-                        // Objects are passed by reference, so we have to make a copy of it using JSON parsing
-                        $scope.summedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
-                      }
-                      // Combine results from each file system to gather summary data per file system
-                      totalidx = checkTotalExists(detailedResultRow);
-                      if (totalidx != -1) {
-                        // A row already exists for this owner and file system at totalidx so just add to it
-                        $scope.totaledResult[totalidx].Number_of_Files += detailedResultRow.Number_of_Files;
-                        $scope.totaledResult[totalidx].Size_of_Files += detailedResultRow.Size_of_Files;
-                      }
-                      else {
-                        // A row does not already exist so create a new total row
-                        // Objects are passed by reference, so we have to make a copy of it using JSON parsing
-                        tmpobject = JSON.parse(JSON.stringify(detailedResultRow));
-                        tmpobject.Age = "Total";
-                        $scope.totaledResult.push(tmpobject);
-                      }
-                      // Combine results across all file systems to get a grand total
-                      $scope.grandTotaledResult.Number_of_Files += detailedResultRow.Number_of_Files;
-                      $scope.grandTotaledResult.Size_of_Files += detailedResultRow.Size_of_Files;
-                      // If owner isn't already in owner options add it
-                      //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
-                      //  $scope.ownerOpts.push(detailedResultRow.Owner);
-                      //}
-                      // Save results to respective arrays
-                      $scope.detailedResult.push(JSON.parse(JSON.stringify(detailedResultRow)));
-                    }
-                  }, function (response) {
-                    // Failed HTTP GET
-                    console.log("Failed to load page");
-                  }).finally(function() {
-                    // Upon success or failure
-                    if ($scope.selectedFilesys == "ALL") {
-                      $scope.result = $scope.summedResult;
-                      $scope.isSummarized = true;
-                    }
-                    else {
-                      $scope.result = $scope.detailedResult;
-                      $scope.isSummarized = false;
-                    }
-                    // Store length of resulting list to determine number of pages
-                    $scope.returnedfs++;
-                    // If this is the last query to return we can handle all the post processing and show the table
-                    if (($scope.returnedfs == $scope.numfs && $scope.selectedFilesys == "ALL") || ($scope.returnedfs == 1 && $scope.selectedFilesys != "ALL")) {
-                      // If all file systems were selected add the grand total to the list so we can filter on one list
-                      $scope.totaledResult.push($scope.grandTotaledResult);
-                      // Now that all results are in, we can calculate percentages
-                      // If we're showing a particular file system we can use the detailed data
-                      if ($scope.selectedFilesys != "ALL") {
-                        for (var k = 0; k < $scope.detailedResult.length; k++) {
-                          var total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
-                          var percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
-                          $scope.detailedResult[k]["Percentage_of_Total_Files"] = percent;
-                          total = find_total($scope.detailedResult[k]["File_System"], "Size_of_Files");
-                          percent = calc_percent($scope.detailedResult[k]["Size_of_Files"], total);
-                          $scope.detailedResult[k]["Percentage_of_Total_Size"] = percent;
+                  for (var l = 0; l < $scope.numAges; l++) {
+                    $http.get(site + detailPage + "?fs=" + $scope.filesysOpts[i] + "&owner=" + $scope.currentOwner + "&id=" + l).then(function (response) {
+                      // Successful HTTP GET
+                      for (var j = 0; j < response.data.length; j++) {
+                        detailedResultRow = response.data[j];
+                        // Combine results from each time slot to gather summary data across all file systems
+                        sumidx = checkSumExists(detailedResultRow);
+                        if (sumidx != -1) {
+                          // A row already exists for this owner and age at sumidx so just add to it
+                          $scope.summedResult[sumidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                          $scope.summedResult[sumidx].Size_of_Files += detailedResultRow.Size_of_Files;
                         }
-                      }
-                      else {
-                        for (var k = 0; k < $scope.summedResult.length; k++) {
-                          var total = $scope.grandTotaledResult.Number_of_Files;
-                          var percent = calc_percent($scope.summedResult[k]["Number_of_Files"], total);
-                          $scope.summedResult[k]["Percentage_of_Total_Files"] = percent;
-                          total = $scope.grandTotaledResult.Size_of_Files;
-                          percent = calc_percent($scope.summedResult[k]["Size_of_Files"], total);
-                          $scope.summedResult[k]["Percentage_of_Total_Size"] = percent;
+                        else {
+                          // A row does not already exist so create a new summary row
+                          // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                          $scope.summedResult[$scope.ages.indexOf(detailedResultRow.Age)] = JSON.parse(JSON.stringify(detailedResultRow));
                         }
+                        // Combine results from each file system to gather summary data per file system
+                        totalidx = checkTotalExists(detailedResultRow);
+                        if (totalidx != -1) {
+                          // A row already exists for this owner and file system at totalidx so just add to it
+                          $scope.totaledResult[totalidx].Number_of_Files += detailedResultRow.Number_of_Files;
+                          $scope.totaledResult[totalidx].Size_of_Files += detailedResultRow.Size_of_Files;
+                        }
+                        else {
+                          // A row does not already exist so create a new total row
+                          // Objects are passed by reference, so we have to make a copy of it using JSON parsing
+                          tmpobject = JSON.parse(JSON.stringify(detailedResultRow));
+                          tmpobject.Age = "Total";
+                          $scope.totaledResult.push(tmpobject);
+                        }
+                        // Combine results across all file systems to get a grand total
+                        $scope.grandTotaledResult.Number_of_Files += detailedResultRow.Number_of_Files;
+                        $scope.grandTotaledResult.Size_of_Files += detailedResultRow.Size_of_Files;
+                        // If owner isn't already in owner options add it
+                        //if ($scope.ownerOpts.indexOf(detailedResultRow.Owner) == -1) {
+                        //  $scope.ownerOpts.push(detailedResultRow.Owner);
+                        //}
+                        // Save results to respective arrays
+                        $scope.detailedResult[$scope.ages.indexOf(detailedResultRow.Age)] = JSON.parse(JSON.stringify(detailedResultRow));
                       }
-                      $scope.tableloading = false;
-                      console.log("Detailed result");
-                      console.log($scope.detailedResult);
-                      console.log("Per time slot summary");
-                      console.log($scope.summedResult);
-                      console.log("Per file system summary");
-                      console.log($scope.totaledResult);
-                      console.log("Combined file system summary");
-                      console.log($scope.grandTotaledResult);
-                    }
-                  });
+                    }, function (response) {
+                      // Failed HTTP GET
+                      console.log("Failed to load page");
+                    }).finally(function() {
+                      // Upon success or failure
+                      // Store length of resulting list to determine number of pages
+                      $scope.returnedfs++;
+                      // If this is the last query to return we can handle all the post processing and show the table
+                      if (($scope.returnedfs == ($scope.numfs * $scope.numAges) && $scope.selectedFilesys == "ALL") || ($scope.returnedfs == $scope.numAges && $scope.selectedFilesys != "ALL")) {
+                        // If all file systems were selected add the grand total to the list so we can filter on one list
+                        $scope.totaledResult.push($scope.grandTotaledResult);
+                        // Now that all results are in, we can calculate percentages
+                        // If we're showing a particular file system we can use the detailed data
+                        if ($scope.selectedFilesys != "ALL") {
+                          console.log("Single file system");
+                          for (var k = 0; k < $scope.detailedResult.length; k++) {
+                            var total = find_total($scope.detailedResult[k]["File_System"], "Number_of_Files");
+                            var percent = calc_percent($scope.detailedResult[k]["Number_of_Files"], total);
+                            $scope.detailedResult[k]["Percentage_of_Total_Files"] = percent;
+                            total = find_total($scope.detailedResult[k]["File_System"], "Size_of_Files");
+                            percent = calc_percent($scope.detailedResult[k]["Size_of_Files"], total);
+                            $scope.detailedResult[k]["Percentage_of_Total_Size"] = percent;
+                          }
+                        }
+                        else {
+                          console.log("All file systems");
+                          for (var k = 0; k < $scope.summedResult.length; k++) {
+                            var total = $scope.grandTotaledResult.Number_of_Files;
+                            var percent = calc_percent($scope.summedResult[k]["Number_of_Files"], total);
+                            $scope.summedResult[k]["Percentage_of_Total_Files"] = percent;
+                            total = $scope.grandTotaledResult.Size_of_Files;
+                            percent = calc_percent($scope.summedResult[k]["Size_of_Files"], total);
+                            $scope.summedResult[k]["Percentage_of_Total_Size"] = percent;
+                          }
+                        }
+                        // Wait to save to result so Angular doesn't try repeating over sparse array
+                        if ($scope.selectedFilesys == "ALL") {
+                          $scope.result = $scope.summedResult;
+                          $scope.isSummarized = true;
+                        }
+                        else {
+                          $scope.result = $scope.detailedResult;
+                          $scope.isSummarized = false;
+                        }
+                        $scope.tableloading = false;
+                        console.log("Detailed result");
+                        console.log($scope.detailedResult);
+                        console.log("Per time slot summary");
+                        console.log($scope.summedResult);
+                        console.log("Per file system summary");
+                        console.log($scope.totaledResult);
+                        console.log("Combined file system summary");
+                        console.log($scope.grandTotaledResult);
+                      }
+                    });
+                  }
                 }
               }
             }
