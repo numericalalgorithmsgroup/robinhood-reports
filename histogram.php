@@ -42,7 +42,7 @@
           $scope.summedResult = [];
           $scope.totaledResult = [];
           $scope.grandTotaledResult = {File_System: "All", Age: "Total", Number_of_Files: 0, Size_of_Files: 0};
-          $scope.returnedfs = 0;
+          $scope.returned = 0;
           $scope.selectedFilesys = $scope.currentFilesys;
         }
         $scope.currentFilesys = "ALL";
@@ -160,6 +160,13 @@
             for (var i = 0; i < $scope.filesysOpts.length; i++) {
               // If the user selected a file system query or proceed of user selected all file systems
               if ($scope.filesysOpts[i] == $scope.selectedFilesys || $scope.selectedFilesys == "ALL") {
+                // Find out the number of queries we're going to make
+                if ($scope.selectedFilesys == "ALL") {
+                  $scope.max = $scope.numfs * $scope.numAges;
+                }
+                else {
+                  $scope.max = $scope.numAges;
+                }
                 // If the user selected all file systems we want to query for each file system except the one named "ALL"
                 if ($scope.filesysOpts[i] != "ALL") {
                   for (var l = 0; l < $scope.numAges; l++) {
@@ -209,9 +216,9 @@
                     }).finally(function() {
                       // Upon success or failure
                       // Store length of resulting list to determine number of pages
-                      $scope.returnedfs++;
+                      $scope.returned++;
                       // If this is the last query to return we can handle all the post processing and show the table
-                      if (($scope.returnedfs == ($scope.numfs * $scope.numAges) && $scope.selectedFilesys == "ALL") || ($scope.returnedfs == $scope.numAges && $scope.selectedFilesys != "ALL")) {
+                      if ($scope.returned == $scope.max) {
                         // If all file systems were selected add the grand total to the list so we can filter on one list
                         $scope.totaledResult.push($scope.grandTotaledResult);
                         // Now that all results are in, we can calculate percentages
@@ -334,11 +341,11 @@
         </div>
       </div>
       <div class="row" ng-show="tableloading && !progressbarloading">
-        <div class="spinner">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <uib-progressbar class="progress-striped active" max="max" value="returned"></uib-progressbar>
         </div>
+        <div class="col-md-3"></div>
       </div>
       <div class="row" ng-show="warning || info">
         <div class="col-md-3"></div>
