@@ -47,15 +47,6 @@
         }
         $scope.currentFilesys = "ALL";
         $scope.currentOwner = "";
-        // Set the default sorting type
-        $scope.sortType = "File_System";
-        // Set the default sorting order
-        $scope.sortReverse = false;
-
-        $scope.sortChanged = function(key) {
-          $scope.sortType = key;
-          $scope.sortReverse = !$scope.sortReverse;
-        }
 
         function calc_percent(num, total) {
           // Check for NaN condition
@@ -331,7 +322,6 @@
                 </div>
                 <div class="modal-body">
                   <ul>
-                    <li>The data in the table can be sorted by clicking on each column header.</li>
                     <li>The age of a file is based on the last time it was read.  <b>The HPC strives to have no data older than 6 months old on these file systems.</b></li>
                   </ul>
                 </div>
@@ -363,16 +353,14 @@
               <thead>
                 <tr class="active">
                   <th ng-repeat="(key,value) in result[0]" ng-hide="isSummarized && key == 'File_System'" style="word-wrap: break-word">
-                    <a href="#" ng-click='sortChanged(key)'>
+                    <a href="#">
                       {{ key }}
-                      <span ng-show="sortType == key && sortReverse" class="caret"></span>
-                      <span class="dropup"><span ng-show="sortType == key && !sortReverse" class="caret"></span></span>
                     </a>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="row in result | orderBy:sortType:sortReverse">
+                <tr ng-repeat="row in result">
                   <td class="text-nowrap" ng-hide="isSummarized"><div class="text-nowrap limit-cell">{{ row.File_System }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Age }}</td>
                   <td class="text-nowrap"><div class="text-nowrap limit-cell">{{ row.Number_of_Files | humanizeInt}}</td>
