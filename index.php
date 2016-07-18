@@ -61,8 +61,9 @@
               }).finally(function() {
                 // Upon success or failure
                 $scope.returnedfs++;
+                $scope.tableloading = false;
                 if ($scope.returnedfs == $scope.numfs) {
-                  $scope.tableloading = false;
+                  $scope.progressbarloading = true;
                   console.log($scope.result);
                 }
               });
@@ -88,7 +89,7 @@
   <body ng-app="tableApp" ng-controller="tableCtrl">
     <?php require_once("include_php/navbar.php"); ?>
     <div class="container-fluid ng-cloak">
-      <div class="row" ng-show="tableloading && !progressbarloading">
+      <div class="row" ng-hide="progressbarloading">
         <div class="col-md-3"></div>
         <div class="col-md-6">
           <uib-progressbar class="progress-striped active" max="numfs" value="returnedfs">{{returnedfs}}/{{numfs}} File Systems</uib-progressbar>
