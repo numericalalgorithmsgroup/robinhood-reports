@@ -1,6 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
+header("Cache-Control: no-cache, no-store, must-revalidate");
 
 require_once("dbroconf.php");
 require_once("helper_php/time.php");
