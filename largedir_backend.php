@@ -10,7 +10,11 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    $largedirsql = "SELECT ENTRIES.id AS id, ENTRIES.owner AS owner, ENTRIES.gr_name AS gr_name, this_path(NAMES.parent_id, NAMES.name) AS path FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.type='dir' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "'";
+    if ($conf["version"] == "rbhv2") {
+      $largedirsql = "SELECT ENTRIES.id AS id, ENTRIES.owner AS owner, ENTRIES.gr_name AS gr_name, this_path(NAMES.parent_id, NAMES.name) AS path FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.type='dir' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "'";
+    } else {
+      $largedirsql = "SELECT ENTRIES.id AS id, ENTRIES.uid AS owner, ENTRIES.gid AS gr_name, this_path(NAMES.parent_id, NAMES.name) AS path FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.type='dir' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "'";
+    }
 
     $outp = "[";
     $largedirresult = $conn->query($largedirsql) or trigger_error($conn->error."[$largedirsql]");

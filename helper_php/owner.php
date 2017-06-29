@@ -8,7 +8,11 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    $usersql = "SELECT DISTINCT owner from ACCT_STAT WHERE count>0";
+    if ($conf["version"] == "rbhv2") {
+      $usersql = "SELECT DISTINCT owner from ACCT_STAT WHERE count>0";
+    } else {
+      $usersql = "SELECT DISTINCT uid from ACCT_STAT WHERE count>0";
+    }
 
     $outp = "[";
     $userresult = $conn->query($usersql) or trigger_error($conn->error."[$usersql]");

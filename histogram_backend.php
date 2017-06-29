@@ -12,15 +12,27 @@ foreach ($db_ro_confs as $conf) {
 
     $sql = array();
 
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access>" . $thirtydaysago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $thirtydaysago . " AND ENTRIES.last_access>" . $sixtydaysago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixtydaysago . " AND ENTRIES.last_access>" . $ninetydaysago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $ninetydaysago . " AND ENTRIES.last_access>" . $sixmonthsago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixmonthsago . " AND ENTRIES.last_access>" . $oneyearago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $oneyearago . " AND ENTRIES.last_access>" . $twoyearsago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $twoyearsago . " AND ENTRIES.last_access>" . $threeyearsago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $threeyearsago . " AND ENTRIES.last_access>" . $fiveyearsago);
-    array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $fiveyearsago);
+    if ($conf["version"] == "rbhv2") {
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access>" . $thirtydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $thirtydaysago . " AND ENTRIES.last_access>" . $sixtydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixtydaysago . " AND ENTRIES.last_access>" . $ninetydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $ninetydaysago . " AND ENTRIES.last_access>" . $sixmonthsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixmonthsago . " AND ENTRIES.last_access>" . $oneyearago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $oneyearago . " AND ENTRIES.last_access>" . $twoyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $twoyearsago . " AND ENTRIES.last_access>" . $threeyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $threeyearsago . " AND ENTRIES.last_access>" . $fiveyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $fiveyearsago);
+    } else {
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access>" . $thirtydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $thirtydaysago . " AND ENTRIES.last_access>" . $sixtydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixtydaysago . " AND ENTRIES.last_access>" . $ninetydaysago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $ninetydaysago . " AND ENTRIES.last_access>" . $sixmonthsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $sixmonthsago . " AND ENTRIES.last_access>" . $oneyearago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $oneyearago . " AND ENTRIES.last_access>" . $twoyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $twoyearsago . " AND ENTRIES.last_access>" . $threeyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $threeyearsago . " AND ENTRIES.last_access>" . $fiveyearsago);
+      array_push($sql, "SELECT COUNT(*) AS number,SUM(size) AS size FROM ENTRIES WHERE ENTRIES.type='file' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "' AND ENTRIES.last_access<=" . $fiveyearsago);
+    }
     $selectsql = $sql[$_GET["id"]];
 
     $outp = "[";
