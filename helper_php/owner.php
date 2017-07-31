@@ -11,7 +11,7 @@ foreach ($db_ro_confs as $conf) {
     if ($conf["version"] == "rbhv2") {
       $usersql = "SELECT DISTINCT owner from ACCT_STAT WHERE count>0";
     } else {
-      $usersql = "SELECT DISTINCT uid from ACCT_STAT WHERE count>0";
+      $usersql = "SELECT DISTINCT uid AS owner from ACCT_STAT WHERE count>0";
     }
 
     $outp = "[";
