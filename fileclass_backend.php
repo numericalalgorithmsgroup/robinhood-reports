@@ -9,22 +9,14 @@ foreach ($db_ro_confs as $conf) {
   if ($_GET["fs"] == $conf["fs"]) {
     $conn = new mysqli($conf["host"], $conf["user"], $conf["pass"], $conf["db"]);
 
-    if ($conf["version"] == "rbhv2") {
-      $fileclasssql = "SELECT id FROM ENTRIES WHERE ENTRIES.release_class LIKE BINARY '" . $_GET["page"] . "_files' AND ENTRIES.owner LIKE BINARY '" . $_GET["owner"] . "'";
-    } else {
-      $fileclasssql = "SELECT id FROM ENTRIES WHERE ENTRIES.fileclass LIKE BINARY '%" . $_GET["page"] . "_files%' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "'";
-    }
+    $fileclasssql = "SELECT id FROM ENTRIES WHERE ENTRIES.fileclass LIKE BINARY '%" . $_GET["page"] . "_files%' AND ENTRIES.uid LIKE BINARY '" . $_GET["owner"] . "'";
 
     $outp = "[";
     $fileclassresult = $conn->query($fileclasssql) or trigger_error($conn->error."[$fileclasssql]");
   
     while($fileclassrs = $fileclassresult->fetch_array(MYSQLI_ASSOC)) {
       if ($outp != "[") {$outp .= ",";}
-      if ($conf["version"] == "rbhv2") {
-        $mdsql = "SELECT this_path(parent_id,name) AS path, size, owner, gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $fileclassrs["id"] . "'";
-      } else {
-        $mdsql = "SELECT this_path(parent_id,name) AS path, size, uid AS owner, gid AS gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $fileclassrs["id"] . "'";
-      }
+      $mdsql = "SELECT this_path(parent_id,name) AS path, size, uid AS owner, gid AS gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $fileclassrs["id"] . "'";
       $mdresult = $conn->query($mdsql) or trigger_error($conn->error."[$mdsql]");
       $mdrs = $mdresult->fetch_array(MYSQLI_ASSOC);
 

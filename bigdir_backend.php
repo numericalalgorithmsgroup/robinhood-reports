@@ -16,11 +16,7 @@ foreach ($db_ro_confs as $conf) {
   
     while($bigdirrs = $bigdirresult->fetch_array(MYSQLI_ASSOC)) {
       if ($outp != "[") {$outp .= ",";}
-      if ($conf["version"] == "rbhv2") {
-        $mdsql = "SELECT this_path(parent_id,name) AS path, owner, gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $bigdirrs["parent_id"] . "'";
-      } else {
-        $mdsql = "SELECT this_path(parent_id,name) AS path, uid AS owner, gid AS gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $bigdirrs["parent_id"] . "'";
-      }
+      $mdsql = "SELECT this_path(parent_id,name) AS path, uid AS owner, gid AS gr_name FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id=NAMES.id WHERE ENTRIES.id='" . $bigdirrs["parent_id"] . "'";
       $mdresult = $conn->query($mdsql) or trigger_error($conn->error."[$mdsql]");
       $mdrs = $mdresult->fetch_array(MYSQLI_ASSOC);
 
