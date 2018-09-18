@@ -20,7 +20,7 @@ foreach ($db_ro_confs as $conf) {
       $mdresult = $conn->query($mdsql) or trigger_error($conn->error."[$mdsql]");
       $mdrs = $mdresult->fetch_array(MYSQLI_ASSOC);
 
-      $outp .= '{"Directory":"'         . str_replace('0x200000007:0x1:0x0', $conf["fs"], $mdrs["path"]) . '",';
+      $outp .= '{"Directory":"'         . str_replace($conf["rootid"], $conf["fs"], $mdrs["path"]) . '",';
       $outp .= '"Number_of_Files":'     . (is_null($bigdirrs["dirattr"]) ? 0 : $bigdirrs["dirattr"])  . ',';
       $outp .= '"Owner":"'              . $mdrs["owner"] . '",';
       $outp .= '"Group":"'              . $mdrs["gr_name"] . '"}';
