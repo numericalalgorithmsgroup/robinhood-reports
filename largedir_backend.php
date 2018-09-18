@@ -27,7 +27,7 @@ foreach ($db_ro_confs as $conf) {
       # Not very useful to display directories with no files in them
       if ($dirsizers["dirsize"] != 0) {
         if ($outp != "[") {$outp .= ",";}
-        $outp .= '{"Directory":"'              . str_replace('0x200000007:0x1:0x0', $conf["fs"], $largedirrs["path"]) . '",';
+        $outp .= '{"Directory":"'              . str_replace($conf["rootid"], $conf["fs"], $largedirrs["path"]) . '",';
         $outp .= '"Size_of_Files":'            . (is_null($dirsizers["dirsize"]) ? 0 : $dirsizers["dirsize"])  . ',';
         $outp .= '"Number_of_Files":'          . (is_null($dirsizers["count"]) ? 0 : $dirsizers["count"])  . ',';
         $outp .= '"Size_of_Old_Files":'        . (is_null($olddirsizers["olddirsize"]) ? 0 : $olddirsizers["olddirsize"])  . ',';
