@@ -1,0 +1,63 @@
+<?php
+/*
+The below nested PHP array contains the configuration for all the Robinhood
+databases that should be included in reports.  There is one inner array per
+Robinhood database.  Multiple Robinhood databases can exist on the same
+MySQL/MariaDB server.
+
+##### Variables
+
+host is the IP/hostname of the MySQL/MariaDB server which contains the
+Robinhood database.
+
+user is the username used to access the Robinhood database.  It is recommended
+that a separate user with read only (SELECT,EXECUTE) permissions on the
+Robinhood database.  For example, that could be done with the following SQL:
+
+    CREATE USER 'rorbh'@'%' IDENTIFIED BY '<my_password>';
+    GRANT SELECT,EXECUTE ON `robinhood%`.* TO 'rorbh'@'%';
+    FLUSH PRIVILEGES;
+
+pass is the password used the access the Robinhood database with the above
+username.
+
+db is the name of the Robinhood database.
+
+fs is the name of the client-side Lustre mount point for this file system.
+Any instances of rootid are replaced with this.
+
+rootid is the Lustre FID of the root of the file system.  For NFS file systems,
+this is a different identifier.  This is necessary because database queries
+using the Robinhood provided functions don't resolve the top of the directory
+tree into a path and instead return the FID of that top level.  Any instances
+of the rootid returned by SQL queries are replaced by the fs variable.
+
+rootid is found by looking for first row in ENTRIES database, or using the
+website after entering the other info.
+
+size is the size in bytes of the file system.  It is not assumed that the web
+server on which this code runs has the configured file system mounted, so sizes
+are entered manually here instead.
+
+size is found by running df on the file system.  Multiply the 1K-blocks value
+produced by df by 1024 to get the size.
+*/
+
+$db_ro_confs = array(
+  array("host" => "x.x.x.x",
+        "user" => "username",
+        "pass" => "password",
+        "db" => "robinhood_fsname1",
+        "fs" => "/mountpoint1",
+        "rootid" => "0x0000000000:0x0:0x0",
+        "size" => "123456789"),
+  array("host" => "x.x.x.x",
+        "user" => "username",
+        "pass" => "password",
+        "db" => "robinhood_fsname2",
+        "fs" => "/mountpoint2",
+        "rootid" => "0x0000000000:0x0:0x0",
+        "size" => "123456789"),
+);
+?>
+
