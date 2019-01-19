@@ -62,9 +62,7 @@ discussion.
 
 ## Credits
 
-* **Shawn Hall - Numerical Algorithms Group** - *Creator* - [shawnahall71](https://github.com/shawnahall71)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Shawn Hall, Numerical Algorithms Group** - *Creator* - [shawnahall71](https://github.com/shawnahall71)
 
 ## License
 
