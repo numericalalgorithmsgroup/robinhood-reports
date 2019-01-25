@@ -50,7 +50,7 @@ Real data was redacted from the below screenshots.
 
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [AngularJS](https://github.com/angular/angular.js)
-* [angular-ui-bootstrap] (https://github.com/angular-ui/bootstrap)
+* [angular-ui-bootstrap](https://github.com/angular-ui/bootstrap)
 * [jQuery](https://github.com/jquery/jquery)
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome)
 * [humanize](https://github.com/taijinlee/humanize)
