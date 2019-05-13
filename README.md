@@ -42,6 +42,18 @@ Real data was redacted from the below screenshots.
 
 ![Detailed Page](screenshots/detailed.png?raw=true)
 
+### Histogram
+
+![Histogram Page](screenshots/histogram.png?raw=true)
+
+### Big Directories
+
+![Big Directories Page](screenshots/big_dir.png?raw=true)
+
+### Interesting Files
+
+![Interesting Files Page](screenshots/interesting.png?raw=true)
+
 ### Largest
 
 ![Largest Directories Page](screenshots/largest.png?raw=true)
