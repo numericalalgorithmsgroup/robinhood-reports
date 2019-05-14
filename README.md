@@ -75,6 +75,10 @@ discussion.
 
 ## Credits
 
+This work was created as a part of a Numerical Algorithms Group consultancy project.  For more information on NAG's consulting services, please visit <https://www.nag.com/content/high-performance-computing-consulting-and-services>.
+
+Below is a list of individual contributors to this project. 
+
 * **Shawn Hall, Numerical Algorithms Group** - *Creator* - [shawnahall71](https://github.com/shawnahall71)
 
 ## License
