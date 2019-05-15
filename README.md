@@ -73,6 +73,10 @@ Real data was redacted from the below screenshots.
 This is a best effort project for me, but all contributions are welcome for
 discussion.
 
+## Support
+
+We offer this software to the community as-is with no warranty or support as per the license.
+
 ## Credits
 
 This work was created as a part of a Numerical Algorithms Group consultancy project.  For more information on NAG's consulting services, please visit <https://www.nag.com/content/high-performance-computing-consulting-and-services>.
