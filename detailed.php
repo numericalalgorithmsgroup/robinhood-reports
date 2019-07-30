@@ -132,6 +132,7 @@
                   // Save results to respective arrays
                   $scope.detailedResult.push(detailedResultRow);
                 }
+                $scope.ownerOpts.sort();
               }, function (response) {
                 // Failed HTTP GET
                 console.log("Failed to load page");

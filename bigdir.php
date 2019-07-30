@@ -65,6 +65,7 @@
                   }
                   $scope.result.push(response.data[j]);
                 }
+                $scope.ownerOpts.sort();
               }, function (response) {
                 // Failed HTTP GET
                 console.log("Failed to load page");
